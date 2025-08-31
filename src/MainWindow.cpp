@@ -1,5 +1,5 @@
 #include "MainWindow.h"
-#include "ui_MainWindow.h"  // Archivo generado por uic - NO lo modifiques
+#include "ui_MainWindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,5 +10,5 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete ui;  // Liberar memoria
+    delete ui;
 }
