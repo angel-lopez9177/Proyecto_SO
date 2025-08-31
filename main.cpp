@@ -3,6 +3,7 @@
 #include <QWidget>
 #include "MainWindow.h"
 #include "VentanaCantidad.h"
+#include "VentanaDatos.h"
 
 int main(int argc, char *argv[])
 {
