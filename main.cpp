@@ -8,13 +8,15 @@
 int main(int argc, char *argv[])
 {
 
-    QApplication app(argc, argv);  // Inicializar aplicación Qt
+    QApplication app(argc, argv);  
     
-    MainWindow window;  // Crear tu ventana principal
-
+    MainWindow window; 
+     
     int cantidad = VentanaCantidad::getQuantity();
-    std::cout << cantidad;
-    window.show();      // Mostrar la ventana
-    
-    return app.exec();  // Ejecutar el bucle principal
+    if (cantidad == -1) return 0;
+
+    VentanaDatos::obtener_datos();
+
+    window.show();  
+    return app.exec();
 }
