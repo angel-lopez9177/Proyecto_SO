@@ -12,11 +12,6 @@ VentanaDatos::VentanaDatos(QWidget *parent)
 
     connect(ui->Boton_Aceptar, &QPushButton::clicked, this, &VentanaDatos::boton_aceptar_clicked);
 
-    connect(this, &VentanaDatos::closeEvent, [this]() {
-        if (!resultadoStatico.has_value()) {
-            throw std::runtime_error("");
-        }
-    });
 }
 
 VentanaDatos::~VentanaDatos()
@@ -26,15 +21,6 @@ VentanaDatos::~VentanaDatos()
 
 std::optional<Programa> VentanaDatos::obtener_datos()
 {
-    int argc = 0;
-    char **argv = nullptr;
-    QApplication* app = nullptr;
-    if (!QApplication::instance()) {
-        app = new QApplication(argc, argv);
-    } else {
-        app = qobject_cast<QApplication*>(QApplication::instance());
-    }
-    
     VentanaDatos ventana;
     ventana.show();
 
@@ -94,9 +80,17 @@ void VentanaDatos::boton_aceptar_clicked()
         
         // Guardar resultado y cerrar
         resultadoStatico = programa;
-        emit usuarioCancelo();
+        emit datosListos(programa);
+        close();
         
     } catch (const std::exception& e) {
         QMessageBox::critical(this, "Error", e.what());
+    }
+}
+
+void VentanaDatos::closeEvent(QCloseEvent *event)
+{
+    if (!resultadoStatico.has_value()) {
+        emit usuarioCancelo();
     }
 }

@@ -4,6 +4,7 @@
 #include "MainWindow.h"
 #include "VentanaCantidad.h"
 #include "VentanaDatos.h"
+#include "gestorDatos.h"
 
 int main(int argc, char *argv[])
 {
@@ -15,7 +16,12 @@ int main(int argc, char *argv[])
     int cantidad = VentanaCantidad::getQuantity();
     if (cantidad == -1) return 0;
 
-    VentanaDatos::obtener_datos();
+    auto programas = GestorDatos::obtener_programas(cantidad);
+    if(!programas.has_value()){
+        return 0;
+    }
+
+    std::vector<Programa> listaProgramas = programas.value();
 
     window.show();  
     return app.exec();

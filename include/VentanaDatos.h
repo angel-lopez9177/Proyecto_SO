@@ -34,6 +34,8 @@ signals:
     void datosListos(Programa programa);
     void usuarioCancelo();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private:
     Ui::VentanaDatos *ui;
