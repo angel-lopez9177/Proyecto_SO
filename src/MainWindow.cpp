@@ -33,7 +33,7 @@ void MainWindow::setProgramas(const std::vector<Programa>& programas)
     this->programas = programas;
     
     this->totalProgramas = programas.size();
-    this->lotesRestantes = totalProgramas / 4;
+    this->lotesRestantes = (totalProgramas-1) / 4;
     this->lotesRestantes++;
     
     ui->Contador_Lotes->setText(QString::number(lotesRestantes));
