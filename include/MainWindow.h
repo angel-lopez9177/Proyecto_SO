@@ -29,8 +29,9 @@ private:
     std::vector<Programa> programasFinalizados;
     Programa programaEnEjecucion;
     int tiempoTranscurrido;
-    int loteActual;
-    int programasEjecutados;
+    int lotesRestantes;
+    int totalProgramas;
+    int programasRestantes;
     bool ejecucionActiva;
 
     void llenarTablaPendientes();
@@ -38,6 +39,7 @@ private:
     void ejecutarSiguientePrograma();
     void vaciarFilaPendientes(int fila);
     void subirFilasPendientes();
+    void vaciarTablaEjecucion();
     QString generarOperacionMatematica(int num1, int num2, int op);
     float calcularResultado(const QString& operacion);
 
