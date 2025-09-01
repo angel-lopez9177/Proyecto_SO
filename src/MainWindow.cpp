@@ -13,6 +13,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->Tabla_Terminados->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->Tabla_Pendientes->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->Tabla_Ejecucion->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
     timer = new QTimer(this);
     timer->setInterval(50); // 50 ms
     connect(timer, &QTimer::timeout, this, &MainWindow::actualizarEjecucion);
@@ -191,4 +195,5 @@ void MainWindow::agregarAFinalizados(const Programa& programa)
     ui->Tabla_Terminados->setItem(row, 0, new QTableWidgetItem(QString::number(programa.ID)));
     ui->Tabla_Terminados->setItem(row, 1, new QTableWidgetItem(operacion));
     ui->Tabla_Terminados->setItem(row, 2, new QTableWidgetItem(QString::number(resultado)));
+
 }
