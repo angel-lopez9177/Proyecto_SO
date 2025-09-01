@@ -37,7 +37,6 @@ std::optional<Programa> VentanaDatos::obtener_datos()
 void VentanaDatos::boton_aceptar_clicked()
 {
     try {
-        // Validar y obtener datos
         QString nombre = ui->Texto_Nombre->text();
         if (nombre.isEmpty()) {
             throw std::runtime_error("El nombre no puede estar vacío");
@@ -69,7 +68,6 @@ void VentanaDatos::boton_aceptar_clicked()
             throw std::runtime_error("Tiempo de ejecución inválido");
         }
 
-        // Crear estructura Programa
         Programa programa;
         programa.nombreProgramador = nombre;
         programa.tiempoEstimado = tiempoEstimado;
@@ -78,7 +76,6 @@ void VentanaDatos::boton_aceptar_clicked()
         programa.numero1 = valor1;
         programa.numero2 = valor2;
         
-        // Guardar resultado y cerrar
         resultadoStatico = programa;
         emit datosListos(programa);
         close();

@@ -151,12 +151,6 @@ void MainWindow::ejecutarSiguientePrograma()
     tiempoTranscurrido = 0;
     
     subirFilasPendientes();
-    // if (!programas.empty() && programas.size() >= 4) {
-    //     QTableWidgetItem *itemNombre = new QTableWidgetItem(programas[3].nombreProgramador);
-    //     QTableWidgetItem *itemTiempo = new QTableWidgetItem(QString::number(programas[3].tiempoEstimado));
-    //     ui->Tabla_Pendientes->setItem(3, 0, itemNombre);
-    //     ui->Tabla_Pendientes->setItem(3, 1, itemTiempo);
-    // }
 }
 
 void MainWindow::actualizarEjecucion()
