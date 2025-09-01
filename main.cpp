@@ -8,7 +8,6 @@
 
 int main(int argc, char *argv[])
 {
-
     QApplication app(argc, argv);  
     
     MainWindow window; 
@@ -34,7 +33,8 @@ int main(int argc, char *argv[])
     }
 
     window.show();
-
+    window.setProgramas(listaProgramas);
+    window.comenzarEjecucion();
     
     return app.exec();
 }
