@@ -17,6 +17,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->Tabla_Pendientes->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->Tabla_Ejecucion->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
+    this->setFocusPolicy(Qt::StrongFocus);
+    this->setCentralWidget(this->ui->centralwidget);
+    this->ui->centralwidget->installEventFilter(this);
+
     timer = new QTimer(this);
     timer->setInterval(50); // 50 ms
     connect(timer, &QTimer::timeout, this, &MainWindow::actualizarEjecucion);
@@ -190,4 +194,38 @@ void MainWindow::agregarAFinalizados(const Programa& programa)
     ui->Tabla_Terminados->setItem(row, 1, new QTableWidgetItem(operacion));
     ui->Tabla_Terminados->setItem(row, 2, new QTableWidgetItem(QString::number(resultado)));
 
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event) {
+    switch(event->key()) {
+        case Qt::Key_P:
+            pausar();
+            break;
+        case Qt::Key_C:
+            reanudar();
+            break;
+        default:
+            QMainWindow::keyPressEvent(event);
+    }
+}
+
+void MainWindow::pausar() {
+    timer->stop();
+    ejecucionActiva = false;
+}
+
+void MainWindow::reanudar() {
+    ejecucionActiva = true;
+    timer->start();
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+        if (keyEvent->key() == Qt::Key_P) {
+            qDebug() << "En el central widget";
+            return true;
+        }
+    }
+    return QMainWindow::eventFilter(obj, event);
 }
