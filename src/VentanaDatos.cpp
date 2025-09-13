@@ -59,7 +59,7 @@ void VentanaDatos::boton_aceptar_clicked()
         if (valor2 < 0) {
             throw std::runtime_error("Tiempo de ejecución inválido");
         }
-        if (operacion == Operacion::DIVISION && valor2 == 0){
+        if ((operacion == Operacion::DIVISION || operacion == Operacion::MODULO) && valor2 == 0){
             throw std::runtime_error("No se permite division entre 0");
         }
 
