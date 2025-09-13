@@ -16,10 +16,16 @@
     <height>300</height>
    </size>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::FocusPolicy::StrongFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Ejecucion por lotes</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="focusPolicy">
+    <enum>Qt::FocusPolicy::NoFocus</enum>
+   </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="1" colspan="2">
      <widget class="QFrame" name="Frame_Ejecucion">
@@ -60,6 +66,9 @@
         <widget class="QTableWidget" name="Tabla_Ejecucion">
          <property name="enabled">
           <bool>true</bool>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::FocusPolicy::NoFocus</enum>
          </property>
          <property name="frameShape">
           <enum>QFrame::Shape::Panel</enum>
@@ -252,6 +261,9 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::FocusPolicy::NoFocus</enum>
+         </property>
          <property name="rowCount">
           <number>4</number>
          </property>
@@ -419,6 +431,9 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::FocusPolicy::NoFocus</enum>
          </property>
          <property name="rowCount">
           <number>0</number>

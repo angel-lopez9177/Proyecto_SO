@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
     }
 
     window.show();
+    window.setFocus();
     window.setProgramas(listaProgramas);
     window.comenzarEjecucion();
     

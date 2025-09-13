@@ -6,6 +6,7 @@
 #include "Programa.h"
 #include <iostream>
 #include <math.h>
+#include <QKeyEvent>
 
 namespace Ui {
 class MainWindow;
@@ -42,9 +43,15 @@ private:
     void vaciarTablaEjecucion();
     QString generarOperacionMatematica(int num1, int num2, int op);
     float calcularResultado(const QString& operacion);
+    void pausar();
+    void reanudar();
 
 private slots:
     void actualizarEjecucion();
+
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 };
 #endif // MAINWINDOW_H
