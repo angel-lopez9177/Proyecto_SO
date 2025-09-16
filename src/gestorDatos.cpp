@@ -4,9 +4,9 @@
 #include <QMessageBox>
 #include <QRandomGenerator>
 
-std::optional<std::vector<Proceso>> GestorDatos::obtener_procesos(int cantidad)
+std::list<Proceso> GestorDatos::obtener_procesos(int cantidad)
 {
-    std::vector<Proceso> procesos;
+    std::list<Proceso> procesos;
     
     for (int i = 0; i < cantidad; i++) {
         

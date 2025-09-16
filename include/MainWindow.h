@@ -5,6 +5,7 @@
 #include <QTimer>
 #include "Proceso.h"
 #include <iostream>
+#include <queue>
 #include <math.h>
 #include <QKeyEvent>
 
@@ -19,32 +20,36 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
-    void setProcesos(const std::vector<Proceso>& procesos);
+    void setProcesos(const std::list<Proceso>& procesos);
     ~MainWindow();
     void comenzarEjecucion();
 
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
-    std::vector<Proceso> procesos;
-    std::vector<Proceso> procesosFinalizados;
+    std::list<Proceso> procesos;
+    std::deque<Proceso> procesosListos;
+    std::queue<Proceso> procesosFinalizados;
     Proceso procesoEnEjecucion;
     int tiempoTranscurrido;
     int lotesRestantes;
-    int loteActual;
-    int totalProcesos;
-    int procesosRestantes;
+    int totalLotes;
     bool ejecucionActiva;
 
     void llenarTablaPendientes();
-    void agregarProcesoFinalizados(const Proceso& proceso, const QString& operacion, const QString& resultado);
-    void ejecutarSiguienteProceso();
+    void llenarProcesosListos();
     void vaciarFilaPendientes(int fila);
     void subirFilasPendientes();
+
+    void ejecutarSiguienteProceso();
     void vaciarTablaEjecucion();
-    void terminaProcesoActual();
+
+    void agregarProcesoFinalizados(const Proceso& proceso, const QString& operacion, const QString& resultado);
+    void terminarProcesoActual();
+
     QString generarOperacionMatematica(int num1, int num2, int op);
     float calcularResultado(const QString& operacion);
+
     void pausar();
     void reanudar();
     void error();
