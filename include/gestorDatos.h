@@ -3,15 +3,15 @@
 
 #include <vector>
 #include <optional>
-#include "Programa.h"
+#include "Proceso.h"
 
 class GestorDatos
 {
 public:
-    static std::optional<std::vector<Programa>> obtener_programas(int cantidad);
+    static std::optional<std::vector<Proceso>> obtener_procesos(int cantidad);
 
 private:
-    static Programa generar_programa(int ID);
+    static Proceso generar_proceso(int ID);
 };
 
 #endif

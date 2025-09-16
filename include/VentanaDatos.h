@@ -2,7 +2,7 @@
 #define VENTANADATOS_H
 
 #include <QWidget>
-#include "Programa.h"
+#include "Proceso.h"
 
 namespace Ui {
 class VentanaDatos;
@@ -16,13 +16,13 @@ public:
     explicit VentanaDatos(QWidget *parent = nullptr);
     ~VentanaDatos();
 
-    static std::optional<Programa> obtener_datos();
+    static std::optional<Proceso> obtener_datos();
 
 public slots:
     void boton_aceptar_clicked();
 
 signals:
-    void datosListos(Programa programa);
+    void datosListos(Proceso proceso);
     void usuarioCancelo();
 
 protected:
@@ -30,7 +30,7 @@ protected:
 
 private:
     Ui::VentanaDatos *ui;
-    static std::optional<Programa> resultadoStatico;
+    static std::optional<Proceso> resultadoStatico;
 };
 
 

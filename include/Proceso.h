@@ -1,10 +1,10 @@
-#ifndef PROGRAMA_H
-#define PROGRAMA_H
+#ifndef PROCESO_H
+#define PROCESO_H
 
 #include <QString>
 #include <optional>
 
-struct Programa
+struct Proceso
 {
         enum Operacion {
                 SUMA = 0,              // "+"

@@ -4,22 +4,22 @@
 #include <QMessageBox>
 #include <QRandomGenerator>
 
-std::optional<std::vector<Programa>> GestorDatos::obtener_programas(int cantidad)
+std::optional<std::vector<Proceso>> GestorDatos::obtener_procesos(int cantidad)
 {
-    std::vector<Programa> programas;
+    std::vector<Proceso> procesos;
     
     for (int i = 0; i < cantidad; i++) {
         
-        Programa programaOpt = GestorDatos::generar_programa(i + 1);
+        Proceso procesoOpt = GestorDatos::generar_proceso(i + 1);
 
-        programas.push_back(programaOpt);
+        procesos.push_back(procesoOpt);
     }
     
-    return programas;
+    return procesos;
 }
 
-Programa GestorDatos::generar_programa(int ID){
-        Programa programa;
+Proceso GestorDatos::generar_proceso(int ID){
+        Proceso proceso;
 
         int operacion = QRandomGenerator::global()->bounded(-1,6);
 
@@ -28,18 +28,18 @@ Programa GestorDatos::generar_programa(int ID){
         float tiempoEstimado = QRandomGenerator::global()->bounded(5,21) * 1.0;
         float tiempoTranscurrido = 0.0;
 
-        if (operacion == Programa::DIVISION || operacion == Programa::MODULO){
+        if (operacion == Proceso::DIVISION || operacion == Proceso::MODULO){
                 valor2 = QRandomGenerator::global()->bounded(0,100);
         }else{
                 valor2 = QRandomGenerator::global()->bounded(-1,100);
         }
 
-        programa.tiempoEstimado = tiempoEstimado;
-        programa.indiceOperacion = operacion;
-        programa.ID = ID;
-        programa.tiempoTranscurrido = tiempoTranscurrido;
-        programa.numero1 = valor1;
-        programa.numero2 = valor2;
+        proceso.tiempoEstimado = tiempoEstimado;
+        proceso.indiceOperacion = operacion;
+        proceso.ID = ID;
+        proceso.tiempoTranscurrido = tiempoTranscurrido;
+        proceso.numero1 = valor1;
+        proceso.numero2 = valor2;
 
-        return programa;
+        return proceso;
 }

@@ -8,9 +8,9 @@ MainWindow::MainWindow(QWidget *parent)
     , tiempoTranscurrido(0)
     , lotesRestantes(0)
     , loteActual(0)
-    , totalProgramas(0)
+    , totalProcesos(0)
     , ejecucionActiva(false)
-    , programasRestantes(0)
+    , procesosRestantes(0)
 {
     ui->setupUi(this);
 
@@ -33,12 +33,12 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::setProgramas(const std::vector<Programa>& programas)
+void MainWindow::setProcesos(const std::vector<Proceso>& procesos)
 {
-    this->programas = programas;
+    this->procesos = procesos;
     
-    this->totalProgramas = programas.size();
-    this->lotesRestantes = (totalProgramas-1) / 4;
+    this->totalProcesos = procesos.size();
+    this->lotesRestantes = (totalProcesos-1) / 4;
     this->lotesRestantes++;
     
     ui->Contador_Lotes->setText(QString::number(lotesRestantes));
@@ -52,12 +52,12 @@ void MainWindow::llenarTablaPendientes()
     loteActual++;
     lotesRestantes--;
     this->ui->Contador_Lotes->setText(QString::number(lotesRestantes));
-    this->programasRestantes = std::min(4, static_cast<int>(programas.size()));
+    this->procesosRestantes = std::min(4, static_cast<int>(procesos.size()));
     
-    for (int i = 0; i < programasRestantes; i++) {
-        QTableWidgetItem *itemID = new QTableWidgetItem(QString::number(programas[i].ID));
-        QTableWidgetItem *itemTME = new QTableWidgetItem(QString::number(programas[i].tiempoEstimado));
-        QTableWidgetItem *itemTT = new QTableWidgetItem(QString::number(programas[i].tiempoTranscurrido));
+    for (int i = 0; i < procesosRestantes; i++) {
+        QTableWidgetItem *itemID = new QTableWidgetItem(QString::number(procesos[i].ID));
+        QTableWidgetItem *itemTME = new QTableWidgetItem(QString::number(procesos[i].tiempoEstimado));
+        QTableWidgetItem *itemTT = new QTableWidgetItem(QString::number(procesos[i].tiempoTranscurrido));
         
         ui->Tabla_Pendientes->setItem(i, 0, itemID);
         ui->Tabla_Pendientes->setItem(i, 1, itemTME);
@@ -95,12 +95,12 @@ void MainWindow::subirFilasPendientes()
 QString MainWindow::generarOperacionMatematica(int num1, int num2, int op)
 {
     switch (op) {
-    case Programa::SUMA: return QString("%1 + %2").arg(num1).arg(num2);
-    case Programa::RESTA: return QString("%1 - %2").arg(num1).arg(num2);
-    case Programa::MULTIPLICACION: return QString("%1 * %2").arg(num1).arg(num2);
-    case Programa::DIVISION: return QString("%1 / %2").arg(num1).arg(num2);
-    case Programa::MODULO: return QString("%1 % %2").arg(num1).arg(num2);
-    case Programa::POTENCIA: return QString("%1 ^ %2").arg(num1).arg(num2);
+    case Proceso::SUMA: return QString("%1 + %2").arg(num1).arg(num2);
+    case Proceso::RESTA: return QString("%1 - %2").arg(num1).arg(num2);
+    case Proceso::MULTIPLICACION: return QString("%1 * %2").arg(num1).arg(num2);
+    case Proceso::DIVISION: return QString("%1 / %2").arg(num1).arg(num2);
+    case Proceso::MODULO: return QString("%1 % %2").arg(num1).arg(num2);
+    case Proceso::POTENCIA: return QString("%1 ^ %2").arg(num1).arg(num2);
     default: return QString("%1 + %2").arg(num1).arg(num2);
     }
 }
@@ -126,38 +126,38 @@ float MainWindow::calcularResultado(const QString& operacion)
 void MainWindow::comenzarEjecucion(){
     
     ejecucionActiva = true;
-    ejecutarSiguientePrograma();
+    ejecutarSiguienteProceso();
     timer->start();
 }
 
-void MainWindow::ejecutarSiguientePrograma()
+void MainWindow::ejecutarSiguienteProceso()
 {
-    if (programas.empty()) {
+    if (procesos.empty()) {
         timer->stop();
         ejecucionActiva = false;
         vaciarTablaEjecucion();
         return;
     }else{
-        if (lotesRestantes>0 && programasRestantes==0){
+        if (lotesRestantes>0 && procesosRestantes==0){
             llenarTablaPendientes();
             std::cout<<"RellenarTabla"<<std::endl;
         }
     }
-    std::cout<<programasRestantes<<std::endl;
+    std::cout<<procesosRestantes<<std::endl;
 
-    programaEnEjecucion = programas.front();
-    programas.erase(programas.begin());
-    programasRestantes--;
+    procesoEnEjecucion = procesos.front();
+    procesos.erase(procesos.begin());
+    procesosRestantes--;
     
-    QString operacion = generarOperacionMatematica(programaEnEjecucion.numero1, programaEnEjecucion.numero2, programaEnEjecucion.indiceOperacion);
+    QString operacion = generarOperacionMatematica(procesoEnEjecucion.numero1, procesoEnEjecucion.numero2, procesoEnEjecucion.indiceOperacion);
     
-    ui->Tabla_Ejecucion->item(0, 0)->setText(QString::number(programaEnEjecucion.ID));
+    ui->Tabla_Ejecucion->item(0, 0)->setText(QString::number(procesoEnEjecucion.ID));
     ui->Tabla_Ejecucion->item(1, 0)->setText(operacion);
-    ui->Tabla_Ejecucion->item(2, 0)->setText(QString::number(programaEnEjecucion.tiempoEstimado));
-    ui->Tabla_Ejecucion->item(3, 0)->setText(QString::number(programaEnEjecucion.tiempoTranscurrido));
-    ui->Tabla_Ejecucion->item(4, 0)->setText(QString::number(programaEnEjecucion.tiempoEstimado-programaEnEjecucion.tiempoTranscurrido));
+    ui->Tabla_Ejecucion->item(2, 0)->setText(QString::number(procesoEnEjecucion.tiempoEstimado));
+    ui->Tabla_Ejecucion->item(3, 0)->setText(QString::number(procesoEnEjecucion.tiempoTranscurrido));
+    ui->Tabla_Ejecucion->item(4, 0)->setText(QString::number(procesoEnEjecucion.tiempoEstimado-procesoEnEjecucion.tiempoTranscurrido));
 
-    tiempoTranscurrido = programaEnEjecucion.tiempoTranscurrido;
+    tiempoTranscurrido = procesoEnEjecucion.tiempoTranscurrido;
     
     subirFilasPendientes();
 }
@@ -168,7 +168,7 @@ void MainWindow::actualizarEjecucion()
     
     tiempoTranscurrido += 50;
     
-    int tiempoRestante = programaEnEjecucion.tiempoEstimado * 1000 - tiempoTranscurrido;
+    int tiempoRestante = procesoEnEjecucion.tiempoEstimado * 1000 - tiempoTranscurrido;
     ui->Tabla_Ejecucion->item(3, 0)->setText(QString::number(tiempoTranscurrido / 1000.0, 'f', 1));
     ui->Tabla_Ejecucion->item(4, 0)->setText(QString::number(tiempoRestante / 1000.0, 'f', 1));
     
@@ -176,12 +176,12 @@ void MainWindow::actualizarEjecucion()
     tiempoTotal += 50;
     ui->Contador_Tiempo->setText(QString::number(tiempoTotal / 1000.0, 'f', 1) + " s");
     
-    if (tiempoTranscurrido >= programaEnEjecucion.tiempoEstimado * 1000) {
+    if (tiempoTranscurrido >= procesoEnEjecucion.tiempoEstimado * 1000) {
         QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
         float r = calcularResultado(operacion);
         QString resultado = QString::number(r);
-        agregarAFinalizados(programaEnEjecucion, operacion, resultado);
-        ejecutarSiguientePrograma();
+        agregarProcesoFinalizados(procesoEnEjecucion, operacion, resultado);
+        ejecutarSiguienteProceso();
     }
 }
 
@@ -190,13 +190,13 @@ void MainWindow::vaciarTablaEjecucion(){
     ui->Tabla_Ejecucion->setItem(i, 0, new QTableWidgetItem(""));
 }
 
-void MainWindow::agregarAFinalizados(const Programa& programa, const QString& operacion, const QString& resultado)
+void MainWindow::agregarProcesoFinalizados(const Proceso& proceso, const QString& operacion, const QString& resultado)
 {
     int row = ui->Tabla_Terminados->rowCount();
     ui->Tabla_Terminados->insertRow(row);
 
     
-    ui->Tabla_Terminados->setItem(row, 0, new QTableWidgetItem(QString::number(programa.ID)));
+    ui->Tabla_Terminados->setItem(row, 0, new QTableWidgetItem(QString::number(proceso.ID)));
     ui->Tabla_Terminados->setItem(row, 1, new QTableWidgetItem(operacion));
     ui->Tabla_Terminados->setItem(row, 2, new QTableWidgetItem(resultado));
     ui->Tabla_Terminados->setItem(row, 3, new QTableWidgetItem(QString::number(loteActual)));

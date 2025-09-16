@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
-#include "Programa.h"
+#include "Proceso.h"
 #include <iostream>
 #include <math.h>
 #include <QKeyEvent>
@@ -19,29 +19,30 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
-    void setProgramas(const std::vector<Programa>& programas);
+    void setProcesos(const std::vector<Proceso>& procesos);
     ~MainWindow();
     void comenzarEjecucion();
 
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
-    std::vector<Programa> programas;
-    std::vector<Programa> programasFinalizados;
-    Programa programaEnEjecucion;
+    std::vector<Proceso> procesos;
+    std::vector<Proceso> procesosFinalizados;
+    Proceso procesoEnEjecucion;
     int tiempoTranscurrido;
     int lotesRestantes;
     int loteActual;
-    int totalProgramas;
-    int programasRestantes;
+    int totalProcesos;
+    int procesosRestantes;
     bool ejecucionActiva;
 
     void llenarTablaPendientes();
-    void agregarAFinalizados(const Programa& programa, const QString& operacion, const QString& resultado);
-    void ejecutarSiguientePrograma();
+    void agregarProcesoFinalizados(const Proceso& proceso, const QString& operacion, const QString& resultado);
+    void ejecutarSiguienteProceso();
     void vaciarFilaPendientes(int fila);
     void subirFilasPendientes();
     void vaciarTablaEjecucion();
+    void terminaProcesoActual();
     QString generarOperacionMatematica(int num1, int num2, int op);
     float calcularResultado(const QString& operacion);
     void pausar();

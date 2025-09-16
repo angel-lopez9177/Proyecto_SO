@@ -15,25 +15,25 @@ int main(int argc, char *argv[])
     int cantidad = VentanaCantidad::getQuantity();
     if (cantidad == -1) return 0;
 
-    auto programas = GestorDatos::obtener_programas(cantidad);
-    if(!programas.has_value()){
+    auto procesos = GestorDatos::obtener_procesos(cantidad);
+    if(!procesos.has_value()){
         return 0;
     }
 
-    std::vector<Programa> listaProgramas = programas.value();
+    std::vector<Proceso> listaProcesos = procesos.value();
 
-    for (size_t i = 0; i < listaProgramas.size(); i++) {
-    const auto& programa = listaProgramas[i];
-    std::cout << "Programa " << (i + 1) << ": " << " (TE: " << programa.tiempoEstimado
-                << ", N1: " << programa.numero1
-                << ", OP: " << programa.indiceOperacion
-                << ", N2: " << programa.numero2 
-                << ", ID: " << programa.ID << ")" << std::endl;
+    for (size_t i = 0; i < listaProcesos.size(); i++) {
+    const auto& proceso = listaProcesos[i];
+    std::cout << "Proceso " << (i + 1) << ": " << " (TE: " << proceso.tiempoEstimado
+                << ", N1: " << proceso.numero1
+                << ", OP: " << proceso.indiceOperacion
+                << ", N2: " << proceso.numero2 
+                << ", ID: " << proceso.ID << ")" << std::endl;
     }
 
     window.show();
     window.setFocus();
-    window.setProgramas(listaProgramas);
+    window.setProcesos(listaProcesos);
     window.comenzarEjecucion();
     
     return app.exec();
