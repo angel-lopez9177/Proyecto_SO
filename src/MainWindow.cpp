@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
     , tiempoTranscurrido(0)
     , lotesRestantes(0)
+    , loteActual(0)
     , totalProgramas(0)
     , ejecucionActiva(false)
     , programasRestantes(0)
@@ -48,17 +49,19 @@ void MainWindow::llenarTablaPendientes()
     for (int i = 0; i < 4; i++) {
         vaciarFilaPendientes(i);
     }
-
+    loteActual++;
     lotesRestantes--;
     this->ui->Contador_Lotes->setText(QString::number(lotesRestantes));
     this->programasRestantes = std::min(4, static_cast<int>(programas.size()));
     
     for (int i = 0; i < programasRestantes; i++) {
-        QTableWidgetItem *itemNombre = new QTableWidgetItem(programas[i].nombreProgramador);
-        QTableWidgetItem *itemTiempo = new QTableWidgetItem(QString::number(programas[i].tiempoEstimado));
+        QTableWidgetItem *itemID = new QTableWidgetItem(QString::number(programas[i].ID));
+        QTableWidgetItem *itemTME = new QTableWidgetItem(QString::number(programas[i].tiempoEstimado));
+        QTableWidgetItem *itemTT = new QTableWidgetItem(QString::number(programas[i].tiempoTranscurrido));
         
-        ui->Tabla_Pendientes->setItem(i, 0, itemNombre);
-        ui->Tabla_Pendientes->setItem(i, 1, itemTiempo);
+        ui->Tabla_Pendientes->setItem(i, 0, itemID);
+        ui->Tabla_Pendientes->setItem(i, 1, itemTME);
+        ui->Tabla_Pendientes->setItem(i, 2, itemTT);
     }
 }
 
@@ -66,17 +69,20 @@ void MainWindow::vaciarFilaPendientes(int fila)
 {
     ui->Tabla_Pendientes->setItem(fila, 0, new QTableWidgetItem(""));
     ui->Tabla_Pendientes->setItem(fila, 1, new QTableWidgetItem(""));
+    ui->Tabla_Pendientes->setItem(fila, 2, new QTableWidgetItem(""));
 }
 
 void MainWindow::subirFilasPendientes()
 {
     for (int i = 0; i < 3; i++) {
-        QTableWidgetItem *itemNombre = ui->Tabla_Pendientes->item(i + 1, 0);
-        QTableWidgetItem *itemTiempo = ui->Tabla_Pendientes->item(i + 1, 1);
+        QTableWidgetItem *itemID = ui->Tabla_Pendientes->item(i + 1, 0);
+        QTableWidgetItem *itemTME = ui->Tabla_Pendientes->item(i + 1, 1);
+        QTableWidgetItem *itemTT = ui->Tabla_Pendientes->item(i + 1, 2);
         
-        if (itemNombre && itemTiempo) {
-            ui->Tabla_Pendientes->setItem(i, 0, new QTableWidgetItem(itemNombre->text()));
-            ui->Tabla_Pendientes->setItem(i, 1, new QTableWidgetItem(itemTiempo->text()));
+        if (itemID && itemTME && itemTT) {
+            ui->Tabla_Pendientes->setItem(i, 0, new QTableWidgetItem(itemID->text()));
+            ui->Tabla_Pendientes->setItem(i, 1, new QTableWidgetItem(itemTME->text()));
+            ui->Tabla_Pendientes->setItem(i, 2, new QTableWidgetItem(itemTT->text()));
         } else {
             vaciarFilaPendientes(i);
         }
@@ -89,12 +95,12 @@ void MainWindow::subirFilasPendientes()
 QString MainWindow::generarOperacionMatematica(int num1, int num2, int op)
 {
     switch (op) {
-    case VentanaDatos::SUMA: return QString("%1 + %2").arg(num1).arg(num2);
-    case VentanaDatos::RESTA: return QString("%1 - %2").arg(num1).arg(num2);
-    case VentanaDatos::MULTIPLICACION: return QString("%1 * %2").arg(num1).arg(num2);
-    case VentanaDatos::DIVISION: return QString("%1 / %2").arg(num1).arg(num2);
-    case VentanaDatos::MODULO: return QString("%1 % %2").arg(num1).arg(num2);
-    case VentanaDatos::POTENCIA: return QString("%1 ^ %2").arg(num1).arg(num2);
+    case Programa::SUMA: return QString("%1 + %2").arg(num1).arg(num2);
+    case Programa::RESTA: return QString("%1 - %2").arg(num1).arg(num2);
+    case Programa::MULTIPLICACION: return QString("%1 * %2").arg(num1).arg(num2);
+    case Programa::DIVISION: return QString("%1 / %2").arg(num1).arg(num2);
+    case Programa::MODULO: return QString("%1 % %2").arg(num1).arg(num2);
+    case Programa::POTENCIA: return QString("%1 ^ %2").arg(num1).arg(num2);
     default: return QString("%1 + %2").arg(num1).arg(num2);
     }
 }
@@ -145,12 +151,11 @@ void MainWindow::ejecutarSiguientePrograma()
     
     QString operacion = generarOperacionMatematica(programaEnEjecucion.numero1, programaEnEjecucion.numero2, programaEnEjecucion.indiceOperacion);
     
-    ui->Tabla_Ejecucion->item(0, 0)->setText(programaEnEjecucion.nombreProgramador);
+    ui->Tabla_Ejecucion->item(0, 0)->setText(QString::number(programaEnEjecucion.ID));
     ui->Tabla_Ejecucion->item(1, 0)->setText(operacion);
     ui->Tabla_Ejecucion->item(2, 0)->setText(QString::number(programaEnEjecucion.tiempoEstimado));
-    ui->Tabla_Ejecucion->item(3, 0)->setText(QString::number(programaEnEjecucion.ID));
-    ui->Tabla_Ejecucion->item(4, 0)->setText("0");
-    ui->Tabla_Ejecucion->item(5, 0)->setText(QString::number(programaEnEjecucion.tiempoEstimado));
+    ui->Tabla_Ejecucion->item(3, 0)->setText(QString::number(programaEnEjecucion.tiempoTranscurrido));
+    ui->Tabla_Ejecucion->item(4, 0)->setText(QString::number(programaEnEjecucion.tiempoEstimado-programaEnEjecucion.tiempoTranscurrido));
 
     tiempoTranscurrido = 0;
     
@@ -164,8 +169,8 @@ void MainWindow::actualizarEjecucion()
     tiempoTranscurrido += 50;
     
     int tiempoRestante = programaEnEjecucion.tiempoEstimado * 1000 - tiempoTranscurrido;
-    ui->Tabla_Ejecucion->item(4, 0)->setText(QString::number(tiempoTranscurrido / 1000.0, 'f', 1));
-    ui->Tabla_Ejecucion->item(5, 0)->setText(QString::number(tiempoRestante / 1000.0, 'f', 1));
+    ui->Tabla_Ejecucion->item(3, 0)->setText(QString::number(tiempoTranscurrido / 1000.0, 'f', 1));
+    ui->Tabla_Ejecucion->item(4, 0)->setText(QString::number(tiempoRestante / 1000.0, 'f', 1));
     
     static int tiempoTotal = 0;
     tiempoTotal += 50;
@@ -193,6 +198,7 @@ void MainWindow::agregarAFinalizados(const Programa& programa)
     ui->Tabla_Terminados->setItem(row, 0, new QTableWidgetItem(QString::number(programa.ID)));
     ui->Tabla_Terminados->setItem(row, 1, new QTableWidgetItem(operacion));
     ui->Tabla_Terminados->setItem(row, 2, new QTableWidgetItem(QString::number(resultado)));
+    ui->Tabla_Terminados->setItem(row, 3, new QTableWidgetItem(QString::number(loteActual)));
 
 }
 

@@ -31,6 +31,7 @@ private:
     Programa programaEnEjecucion;
     int tiempoTranscurrido;
     int lotesRestantes;
+    int loteActual;
     int totalProgramas;
     int programasRestantes;
     bool ejecucionActiva;
