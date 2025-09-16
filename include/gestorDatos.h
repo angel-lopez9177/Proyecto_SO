@@ -1,14 +1,17 @@
 #ifndef GESTORDATOS_H
 #define GESTORDATOS_H
 
-#include <vector>
+#include <list>
 #include <optional>
-#include "Programa.h"
+#include "Proceso.h"
 
 class GestorDatos
 {
 public:
-    static std::optional<std::vector<Programa>> obtener_programas(int cantidad);
+    static std::list<Proceso> obtener_procesos(int cantidad);
+
+private:
+    static Proceso generar_proceso(int ID);
 };
 
 #endif
