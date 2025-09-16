@@ -12,6 +12,7 @@ struct Programa
         int numero2;
         int tiempoEstimado;
         int ID;
+        float tiempoTranscurrido;
 };
 
 
