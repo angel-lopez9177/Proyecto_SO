@@ -11,7 +11,7 @@ public:
     static std::optional<std::vector<Programa>> obtener_programas(int cantidad);
 
 private:
-    Programa generar_programa(int ID);
+    static Programa generar_programa(int ID);
 };
 
 #endif

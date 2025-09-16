@@ -10,7 +10,7 @@ std::optional<std::vector<Programa>> GestorDatos::obtener_programas(int cantidad
     
     for (int i = 0; i < cantidad; i++) {
         
-        Programa programaOpt = generar_programa(i + 1);
+        Programa programaOpt = GestorDatos::generar_programa(i + 1);
 
         programas.push_back(programaOpt);
     }
@@ -25,8 +25,8 @@ Programa GestorDatos::generar_programa(int ID){
 
         int valor1 = QRandomGenerator::global()->bounded(-1,100);
         int valor2 = 0;
-        int tiempoEstimado = QRandomGenerator::global()->bounded(5,21);
-        int tiempoTranscurrido = 0;
+        float tiempoEstimado = QRandomGenerator::global()->bounded(5,21) * 1.0;
+        float tiempoTranscurrido = 0.0;
 
         if (operacion == Programa::DIVISION || operacion == Programa::MODULO){
                 valor2 = QRandomGenerator::global()->bounded(0,100);
