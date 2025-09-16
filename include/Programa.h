@@ -6,7 +6,6 @@
 
 struct Programa
 {
-        QString nombreProgramador;
         int numero1;
         int indiceOperacion;
         int numero2;
