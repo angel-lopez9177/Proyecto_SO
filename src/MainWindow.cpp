@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->Tabla_Pendientes->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->Tabla_Ejecucion->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
+    procesoEnEjecucion.reset();
+
     this->setFocusPolicy(Qt::StrongFocus);
     this->setCentralWidget(this->ui->centralwidget);
     this->ui->centralwidget->installEventFilter(this);
@@ -50,14 +52,18 @@ void MainWindow::llenarTablaPendientes()
     this->ui->Contador_Lotes->setText(QString::number(lotesRestantes));
     
     for (int i = 0; i < procesosListos.size(); i++) {
-        QTableWidgetItem *itemID = new QTableWidgetItem(QString::number(procesosListos[i].ID));
-        QTableWidgetItem *itemTME = new QTableWidgetItem(QString::number(procesosListos[i].tiempoEstimado));
-        QTableWidgetItem *itemTT = new QTableWidgetItem(QString::number(procesosListos[i].tiempoTranscurrido));
-        
-        ui->Tabla_Pendientes->setItem(i, 0, itemID);
-        ui->Tabla_Pendientes->setItem(i, 1, itemTME);
-        ui->Tabla_Pendientes->setItem(i, 2, itemTT);
+        llenarFilaPendientes(i, procesosListos[i]);
     }
+}
+
+void MainWindow::llenarFilaPendientes(int i, Proceso proceso){
+    QTableWidgetItem *itemID = new QTableWidgetItem(QString::number(proceso.ID));
+    QTableWidgetItem *itemTME = new QTableWidgetItem(QString::number(proceso.tiempoEstimado));
+    QTableWidgetItem *itemTT = new QTableWidgetItem(QString::number(proceso.tiempoTranscurrido));
+
+    ui->Tabla_Pendientes->setItem(i, 0, itemID);
+    ui->Tabla_Pendientes->setItem(i, 1, itemTME);
+    ui->Tabla_Pendientes->setItem(i, 2, itemTT);
 }
 
 void MainWindow::llenarProcesosListos(){
@@ -139,6 +145,7 @@ void MainWindow::ejecutarSiguienteProceso()
     if (procesos.empty() && procesosListos.empty()) {
         timer->stop();
         ejecucionActiva = false;
+        this->procesoEnEjecucion.reset();
         vaciarTablaEjecucion();
         return;
     }else{
@@ -149,8 +156,10 @@ void MainWindow::ejecutarSiguienteProceso()
         }
     }
 
-    procesoEnEjecucion = procesosListos.front();
+    this->procesoEnEjecucion = procesosListos.front();
     procesosListos.pop_front();
+    
+    Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
     
     QString operacion = generarOperacionMatematica(procesoEnEjecucion.numero1, procesoEnEjecucion.numero2, procesoEnEjecucion.indiceOperacion);
     
@@ -169,6 +178,8 @@ void MainWindow::actualizarEjecucion()
 {
     if (!ejecucionActiva) return;
     
+    Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
+
     tiempoTranscurrido += 50;
     
     int tiempoRestante = procesoEnEjecucion.tiempoEstimado * 1000 - tiempoTranscurrido;
@@ -186,10 +197,11 @@ void MainWindow::actualizarEjecucion()
 }
 
 void MainWindow::terminarProcesoActual(){
-        QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
-        float r = calcularResultado(operacion);
-        QString resultado = QString::number(r);
-        agregarProcesoFinalizados(procesoEnEjecucion, operacion, resultado);
+    Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
+    QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
+    float r = calcularResultado(operacion);
+    QString resultado = QString::number(r);
+    agregarProcesoFinalizados(procesoEnEjecucion, operacion, resultado);
 }
 
 void MainWindow::vaciarTablaEjecucion(){
@@ -240,14 +252,23 @@ void MainWindow::reanudar() {
 }
 
 void MainWindow::error(){
-    QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
-    QString resultado = QString("Error");
-    agregarProcesoFinalizados(procesoEnEjecucion, operacion, resultado);
-    ejecutarSiguienteProceso();
+    if (this->procesoEnEjecucion.has_value()){
+        Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
+        QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
+        QString resultado = QString("Error");
+        agregarProcesoFinalizados(procesoEnEjecucion, operacion, resultado);
+        ejecutarSiguienteProceso();
+    }
+    return;
 }
 
 void MainWindow::interrupcion(){
-
+    if (this->procesoEnEjecucion.has_value()){
+        Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
+        llenarFilaPendientes(procesosListos.size(), procesoEnEjecucion);
+        procesosListos.push_back(procesoEnEjecucion);
+    }
+    return;
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event) {

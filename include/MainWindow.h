@@ -30,13 +30,14 @@ private:
     std::list<Proceso> procesos;
     std::deque<Proceso> procesosListos;
     std::queue<Proceso> procesosFinalizados;
-    Proceso procesoEnEjecucion;
+    std::optional<Proceso> procesoEnEjecucion;
     int tiempoTranscurrido;
     int lotesRestantes;
     int totalLotes;
     bool ejecucionActiva;
 
     void llenarTablaPendientes();
+    void llenarFilaPendientes(int i, Proceso proceso);
     void llenarProcesosListos();
     void vaciarFilaPendientes(int fila);
     void subirFilasPendientes();
