@@ -5,7 +5,6 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , tiempoTranscurrido(0)
     , lotesRestantes(0)
     , totalLotes(0)
     , ejecucionActiva(false)
@@ -59,7 +58,7 @@ void MainWindow::llenarTablaPendientes()
 void MainWindow::llenarFilaPendientes(int i, Proceso proceso){
     QTableWidgetItem *itemID = new QTableWidgetItem(QString::number(proceso.ID));
     QTableWidgetItem *itemTME = new QTableWidgetItem(QString::number(proceso.tiempoEstimado));
-    QTableWidgetItem *itemTT = new QTableWidgetItem(QString::number(proceso.tiempoTranscurrido));
+    QTableWidgetItem *itemTT = new QTableWidgetItem(QString::number(proceso.tiempoTranscurrido / 1000.0));
 
     ui->Tabla_Pendientes->setItem(i, 0, itemID);
     ui->Tabla_Pendientes->setItem(i, 1, itemTME);
@@ -168,8 +167,6 @@ void MainWindow::ejecutarSiguienteProceso()
     ui->Tabla_Ejecucion->item(2, 0)->setText(QString::number(procesoEnEjecucion.tiempoEstimado));
     ui->Tabla_Ejecucion->item(3, 0)->setText(QString::number(procesoEnEjecucion.tiempoTranscurrido));
     ui->Tabla_Ejecucion->item(4, 0)->setText(QString::number(procesoEnEjecucion.tiempoEstimado-procesoEnEjecucion.tiempoTranscurrido));
-
-    tiempoTranscurrido = procesoEnEjecucion.tiempoTranscurrido;
     
     subirFilasPendientes();
 }
@@ -177,20 +174,20 @@ void MainWindow::ejecutarSiguienteProceso()
 void MainWindow::actualizarEjecucion()
 {
     if (!ejecucionActiva) return;
-    
-    Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
 
-    tiempoTranscurrido += 50;
+    this->procesoEnEjecucion.value().tiempoTranscurrido += 50;
+    Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
     
-    int tiempoRestante = procesoEnEjecucion.tiempoEstimado * 1000 - tiempoTranscurrido;
-    ui->Tabla_Ejecucion->item(3, 0)->setText(QString::number(tiempoTranscurrido / 1000.0, 'f', 1));
-    ui->Tabla_Ejecucion->item(4, 0)->setText(QString::number(tiempoRestante / 1000.0, 'f', 1));
+    float tiempoRestante = procesoEnEjecucion.tiempoEstimado * 1000 - procesoEnEjecucion.tiempoTranscurrido;
+    ui->Tabla_Ejecucion->item(3, 0)->setText(QString::number(procesoEnEjecucion.tiempoTranscurrido / 1000.0, 'f', 2));
+    ui->Tabla_Ejecucion->item(4, 0)->setText(QString::number(tiempoRestante / 1000.0, 'f', 2));
     
     static int tiempoTotal = 0;
     tiempoTotal += 50;
-    ui->Contador_Tiempo->setText(QString::number(tiempoTotal / 1000.0, 'f', 1) + " s");
+
+    ui->Contador_Tiempo->setText(QString::number(tiempoTotal / 1000.0, 'f', 2) + " s");
     
-    if (tiempoTranscurrido >= procesoEnEjecucion.tiempoEstimado * 1000) {
+    if (procesoEnEjecucion.tiempoTranscurrido >= procesoEnEjecucion.tiempoEstimado * 1000) {
         terminarProcesoActual();
         ejecutarSiguienteProceso();
     }
@@ -267,6 +264,7 @@ void MainWindow::interrupcion(){
         Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
         llenarFilaPendientes(procesosListos.size(), procesoEnEjecucion);
         procesosListos.push_back(procesoEnEjecucion);
+        ejecutarSiguienteProceso();
     }
     return;
 }

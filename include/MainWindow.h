@@ -31,7 +31,6 @@ private:
     std::deque<Proceso> procesosListos;
     std::queue<Proceso> procesosFinalizados;
     std::optional<Proceso> procesoEnEjecucion;
-    int tiempoTranscurrido;
     int lotesRestantes;
     int totalLotes;
     bool ejecucionActiva;
