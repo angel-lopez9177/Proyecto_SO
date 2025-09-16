@@ -218,6 +218,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         case Qt::Key_C:
             reanudar();
             break;
+        case Qt::Key_E:
+            interrupcion();
+            break;
+        case Qt::Key_W:
+            error();
+            break;
         default:
             QMainWindow::keyPressEvent(event);
     }
@@ -234,7 +240,10 @@ void MainWindow::reanudar() {
 }
 
 void MainWindow::error(){
-
+    QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
+    QString resultado = QString("Error");
+    agregarProcesoFinalizados(procesoEnEjecucion, operacion, resultado);
+    ejecutarSiguienteProceso();
 }
 
 void MainWindow::interrupcion(){
