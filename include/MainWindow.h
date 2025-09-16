@@ -37,7 +37,7 @@ private:
     bool ejecucionActiva;
 
     void llenarTablaPendientes();
-    void agregarAFinalizados(const Programa& programa);
+    void agregarAFinalizados(const Programa& programa, const QString& operacion, const QString& resultado);
     void ejecutarSiguientePrograma();
     void vaciarFilaPendientes(int fila);
     void subirFilasPendientes();
@@ -46,6 +46,8 @@ private:
     float calcularResultado(const QString& operacion);
     void pausar();
     void reanudar();
+    void error();
+    void interrupcion();
 
 private slots:
     void actualizarEjecucion();

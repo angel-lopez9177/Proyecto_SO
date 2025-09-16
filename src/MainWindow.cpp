@@ -157,7 +157,7 @@ void MainWindow::ejecutarSiguientePrograma()
     ui->Tabla_Ejecucion->item(3, 0)->setText(QString::number(programaEnEjecucion.tiempoTranscurrido));
     ui->Tabla_Ejecucion->item(4, 0)->setText(QString::number(programaEnEjecucion.tiempoEstimado-programaEnEjecucion.tiempoTranscurrido));
 
-    tiempoTranscurrido = 0;
+    tiempoTranscurrido = programaEnEjecucion.tiempoTranscurrido;
     
     subirFilasPendientes();
 }
@@ -177,7 +177,10 @@ void MainWindow::actualizarEjecucion()
     ui->Contador_Tiempo->setText(QString::number(tiempoTotal / 1000.0, 'f', 1) + " s");
     
     if (tiempoTranscurrido >= programaEnEjecucion.tiempoEstimado * 1000) {
-        agregarAFinalizados(programaEnEjecucion);
+        QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
+        float r = calcularResultado(operacion);
+        QString resultado = QString::number(r);
+        agregarAFinalizados(programaEnEjecucion, operacion, resultado);
         ejecutarSiguientePrograma();
     }
 }
@@ -187,17 +190,15 @@ void MainWindow::vaciarTablaEjecucion(){
     ui->Tabla_Ejecucion->setItem(i, 0, new QTableWidgetItem(""));
 }
 
-void MainWindow::agregarAFinalizados(const Programa& programa)
+void MainWindow::agregarAFinalizados(const Programa& programa, const QString& operacion, const QString& resultado)
 {
     int row = ui->Tabla_Terminados->rowCount();
     ui->Tabla_Terminados->insertRow(row);
-    
-    QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
-    float resultado = calcularResultado(operacion);
+
     
     ui->Tabla_Terminados->setItem(row, 0, new QTableWidgetItem(QString::number(programa.ID)));
     ui->Tabla_Terminados->setItem(row, 1, new QTableWidgetItem(operacion));
-    ui->Tabla_Terminados->setItem(row, 2, new QTableWidgetItem(QString::number(resultado)));
+    ui->Tabla_Terminados->setItem(row, 2, new QTableWidgetItem(resultado));
     ui->Tabla_Terminados->setItem(row, 3, new QTableWidgetItem(QString::number(loteActual)));
 
 }
@@ -223,6 +224,14 @@ void MainWindow::pausar() {
 void MainWindow::reanudar() {
     ejecucionActiva = true;
     timer->start();
+}
+
+void MainWindow::error(){
+
+}
+
+void MainWindow::interrupcion(){
+
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
