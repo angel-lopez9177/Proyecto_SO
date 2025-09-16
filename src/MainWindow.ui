@@ -432,6 +432,12 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="maximumSize">
+          <size>
+           <width>401</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="focusPolicy">
           <enum>Qt::FocusPolicy::NoFocus</enum>
          </property>
@@ -439,16 +445,16 @@
           <number>0</number>
          </property>
          <property name="columnCount">
-          <number>3</number>
+          <number>4</number>
          </property>
          <attribute name="horizontalHeaderVisible">
           <bool>true</bool>
          </attribute>
          <attribute name="horizontalHeaderMinimumSectionSize">
-          <number>120</number>
+          <number>80</number>
          </attribute>
          <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>130</number>
+          <number>85</number>
          </attribute>
          <attribute name="horizontalHeaderHighlightSections">
           <bool>true</bool>
@@ -472,6 +478,11 @@
          <column>
           <property name="text">
            <string>Resultado</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>No. Lote</string>
           </property>
          </column>
         </widget>
