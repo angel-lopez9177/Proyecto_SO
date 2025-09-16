@@ -59,7 +59,7 @@ void VentanaDatos::boton_aceptar_clicked()
         if (valor2 < 0) {
             throw std::runtime_error("Tiempo de ejecución inválido");
         }
-        if (operacion == Operacion::DIVISION && valor2 == 0){
+        if ((operacion == Programa::DIVISION || operacion == Programa::MODULO) && valor2 == 0){
             throw std::runtime_error("No se permite division entre 0");
         }
 
@@ -69,7 +69,6 @@ void VentanaDatos::boton_aceptar_clicked()
         }
 
         Programa programa;
-        programa.nombreProgramador = nombre;
         programa.tiempoEstimado = tiempoEstimado;
         programa.indiceOperacion = operacion;
         programa.ID = ID;

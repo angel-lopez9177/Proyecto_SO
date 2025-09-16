@@ -24,8 +24,7 @@ int main(int argc, char *argv[])
 
     for (size_t i = 0; i < listaProgramas.size(); i++) {
     const auto& programa = listaProgramas[i];
-    std::cout << "Programa " << (i + 1) << ": " << programa.nombreProgramador.toStdString()
-                << " (TE: " << programa.tiempoEstimado
+    std::cout << "Programa " << (i + 1) << ": " << " (TE: " << programa.tiempoEstimado
                 << ", N1: " << programa.numero1
                 << ", OP: " << programa.indiceOperacion
                 << ", N2: " << programa.numero2 

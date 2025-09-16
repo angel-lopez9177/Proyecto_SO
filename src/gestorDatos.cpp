@@ -2,38 +2,44 @@
 #include "VentanaDatos.h"
 #include <iostream>
 #include <QMessageBox>
+#include <QRandomGenerator>
 
 std::optional<std::vector<Programa>> GestorDatos::obtener_programas(int cantidad)
 {
     std::vector<Programa> programas;
     
-    
     for (int i = 0; i < cantidad; i++) {
-        std::cout << "Solicitando datos del programa " << (i + 1) << " de " << cantidad << std::endl;
         
-        auto programaOpt = VentanaDatos::obtener_datos();
-        
-        bool IDRepetida = false;
+        Programa programaOpt = generar_programa(i + 1);
 
-        if (programaOpt.has_value()) {
-                for(int i = 0; i<programas.size();i++){
-                        if (programaOpt.value().ID == programas[i].ID) IDRepetida = true;
-                }
-                if (IDRepetida){
-                        i--; 
-                        QMessageBox mensaje;
-                        mensaje.setWindowTitle("Error");
-                        mensaje.setText("El ID debe de ser unico, reingrese los datos");
-                        mensaje.exec();
-                        continue;
-                } 
-                programas.push_back(programaOpt.value());
-                std::cout << "Programa agregado" << std::endl;
-        }else {
-                std::cout << "Usuario canceló" << std::endl;
-                return std::nullopt;
-        }
+        programas.push_back(programaOpt);
     }
     
     return programas;
+}
+
+Programa GestorDatos::generar_programa(int ID){
+        Programa programa;
+
+        int operacion = QRandomGenerator::global()->bounded(-1,6);
+
+        int valor1 = QRandomGenerator::global()->bounded(-1,100);
+        int valor2 = 0;
+        int tiempoEstimado = QRandomGenerator::global()->bounded(5,21);
+        int tiempoTranscurrido = 0;
+
+        if (operacion == Programa::DIVISION || operacion == Programa::MODULO){
+                valor2 = QRandomGenerator::global()->bounded(0,100);
+        }else{
+                valor2 = QRandomGenerator::global()->bounded(-1,100);
+        }
+
+        programa.tiempoEstimado = tiempoEstimado;
+        programa.indiceOperacion = operacion;
+        programa.ID = ID;
+        programa.tiempoTranscurrido = tiempoTranscurrido;
+        programa.numero1 = valor1;
+        programa.numero2 = valor2;
+
+        return programa;
 }
