@@ -35,11 +35,7 @@ private:
     int totalLotes;
     bool ejecucionActiva;
 
-    void llenarTablaPendientes();
-    void llenarFilaPendientes(int i, Proceso proceso);
     void llenarProcesosListos();
-    void vaciarFilaPendientes(int fila);
-    void subirFilasPendientes();
 
     void ejecutarSiguienteProceso();
     void vaciarTablaEjecucion();
