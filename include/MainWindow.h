@@ -35,16 +35,10 @@ private:
     int totalLotes;
     bool ejecucionActiva;
 
-    void llenarTablaPendientes();
-    void llenarFilaPendientes(int i, Proceso proceso);
     void llenarProcesosListos();
-    void vaciarFilaPendientes(int fila);
-    void subirFilasPendientes();
 
     void ejecutarSiguienteProceso();
-    void vaciarTablaEjecucion();
 
-    void agregarProcesoFinalizados(const Proceso& proceso, const QString& operacion, const QString& resultado);
     void terminarProcesoActual();
 
     QString generarOperacionMatematica(int num1, int num2, int op);

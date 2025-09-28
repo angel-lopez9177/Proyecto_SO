@@ -22,3 +22,7 @@ void TablaEjecucion::limpiar() {
         this->setItem(i, 0, new QTableWidgetItem(""));
     }
 }
+
+void TablaEjecucion::eliminar(int fila){}
+void TablaEjecucion::popBack(){}
+void TablaEjecucion::popFront(){}
