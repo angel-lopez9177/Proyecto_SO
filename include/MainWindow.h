@@ -3,9 +3,11 @@
 
 #include <QMainWindow>
 #include <QTimer>
-#include "Programa.h"
+#include "Proceso.h"
 #include <iostream>
+#include <queue>
 #include <math.h>
+#include <QKeyEvent>
 
 namespace Ui {
 class MainWindow;
@@ -18,33 +20,47 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
-    void setProgramas(const std::vector<Programa>& programas);
+    void setProcesos(const std::list<Proceso>& procesos);
     ~MainWindow();
     void comenzarEjecucion();
 
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
-    std::vector<Programa> programas;
-    std::vector<Programa> programasFinalizados;
-    Programa programaEnEjecucion;
-    int tiempoTranscurrido;
+    std::list<Proceso> procesos;
+    std::deque<Proceso> procesosListos;
+    std::queue<Proceso> procesosFinalizados;
+    std::optional<Proceso> procesoEnEjecucion;
     int lotesRestantes;
-    int totalProgramas;
-    int programasRestantes;
+    int totalLotes;
     bool ejecucionActiva;
 
     void llenarTablaPendientes();
-    void agregarAFinalizados(const Programa& programa);
-    void ejecutarSiguientePrograma();
+    void llenarFilaPendientes(int i, Proceso proceso);
+    void llenarProcesosListos();
     void vaciarFilaPendientes(int fila);
     void subirFilasPendientes();
+
+    void ejecutarSiguienteProceso();
     void vaciarTablaEjecucion();
+
+    void agregarProcesoFinalizados(const Proceso& proceso, const QString& operacion, const QString& resultado);
+    void terminarProcesoActual();
+
     QString generarOperacionMatematica(int num1, int num2, int op);
     float calcularResultado(const QString& operacion);
 
+    void pausar();
+    void reanudar();
+    void error();
+    void interrupcion();
+
 private slots:
     void actualizarEjecucion();
+
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 };
 #endif // MAINWINDOW_H

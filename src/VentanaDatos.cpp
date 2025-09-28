@@ -2,7 +2,7 @@
 #include "ui_VentanaDatos.h"
 #include <QMessageBox>
 
-std::optional<Programa> VentanaDatos::resultadoStatico = std::nullopt;
+std::optional<Proceso> VentanaDatos::resultadoStatico = std::nullopt;
 
 VentanaDatos::VentanaDatos(QWidget *parent)
     : QWidget(parent)
@@ -19,7 +19,7 @@ VentanaDatos::~VentanaDatos()
     delete ui;
 }
 
-std::optional<Programa> VentanaDatos::obtener_datos()
+std::optional<Proceso> VentanaDatos::obtener_datos()
 {
     VentanaDatos ventana;
     ventana.show();
@@ -59,7 +59,8 @@ void VentanaDatos::boton_aceptar_clicked()
         if (valor2 < 0) {
             throw std::runtime_error("Tiempo de ejecución inválido");
         }
-        if ((operacion == Operacion::DIVISION || operacion == Operacion::MODULO) && valor2 == 0){
+      
+        if ((operacion == Proceso::DIVISION || operacion == Proceso::MODULO) && valor2 == 0){
             throw std::runtime_error("No se permite division entre 0");
         }
 
@@ -68,16 +69,15 @@ void VentanaDatos::boton_aceptar_clicked()
             throw std::runtime_error("Tiempo de ejecución inválido");
         }
 
-        Programa programa;
-        programa.nombreProgramador = nombre;
-        programa.tiempoEstimado = tiempoEstimado;
-        programa.indiceOperacion = operacion;
-        programa.ID = ID;
-        programa.numero1 = valor1;
-        programa.numero2 = valor2;
+        Proceso proceso;
+        proceso.tiempoEstimado = tiempoEstimado;
+        proceso.indiceOperacion = operacion;
+        proceso.ID = ID;
+        proceso.numero1 = valor1;
+        proceso.numero2 = valor2;
         
-        resultadoStatico = programa;
-        emit datosListos(programa);
+        resultadoStatico = proceso;
+        emit datosListos(proceso);
         close();
         
     } catch (const std::exception& e) {
