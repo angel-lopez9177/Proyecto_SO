@@ -63,7 +63,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QTableWidget" name="Tabla_Ejecucion">
+        <widget class="TablaEjecucion" name="Tabla_Ejecucion">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -179,7 +179,7 @@
      </widget>
     </item>
     <item row="2" column="0">
-     <widget class="QFrame" name="Frame_Lotes">
+     <widget class="QFrame" name="Frame_Procesos">
       <property name="frameShape">
        <enum>QFrame::Shape::StyledPanel</enum>
       </property>
@@ -188,7 +188,7 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QLabel" name="Label_Lotes">
+        <widget class="QLabel" name="Label_Procesos">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -203,12 +203,12 @@
           </font>
          </property>
          <property name="text">
-          <string>Lotes pendientes:</string>
+          <string>Procesos Nuevos:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="Contador_Lotes">
+        <widget class="QLabel" name="Contador_Procesos">
          <property name="text">
           <string>0</string>
          </property>
@@ -218,7 +218,7 @@
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QFrame" name="Frame_Pendientes">
+     <widget class="QFrame" name="Frame_Listos">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>3</horstretch>
@@ -239,7 +239,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLabel" name="Label_Pendientes">
+        <widget class="QLabel" name="Label_Listos">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -254,12 +254,12 @@
           </font>
          </property>
          <property name="text">
-          <string>Procesos Pendientes:</string>
+          <string>Procesos Listos:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QTableWidget" name="Tabla_Pendientes">
+        <widget class="TablaListos" name="Tabla_Listos">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -468,7 +468,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QTableWidget" name="Tabla_Terminados">
+        <widget class="TablaTerminados" name="Tabla_Terminados">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -536,6 +536,23 @@
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TablaListos</class>
+   <extends>QTableWidget</extends>
+   <header>TablaListos.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TablaEjecucion</class>
+   <extends>QTableWidget</extends>
+   <header>TablaEjecucion.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TablaTerminados</class>
+   <extends>QTableWidget</extends>
+   <header>TablaTerminados.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
