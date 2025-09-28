@@ -10,9 +10,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ejecucionActiva(false)
 {
     ui->setupUi(this);
-
     ui->Tabla_Terminados->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    ui->Tabla_Pendientes->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->Tabla_Listos->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->Tabla_Ejecucion->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     procesoEnEjecucion.reset();
@@ -39,7 +38,7 @@ void MainWindow::setProcesos(const std::list<Proceso>& procesos)
     this->totalLotes = ((totalProcesos-1) / 4) + 1;
     this->lotesRestantes = this->totalLotes;
     
-    ui->Contador_Lotes->setText(QString::number(lotesRestantes));
+    ui->Contador_Procesos->setText(QString::number(lotesRestantes));
 }
 
 void MainWindow::llenarTablaPendientes()
@@ -48,7 +47,7 @@ void MainWindow::llenarTablaPendientes()
         vaciarFilaPendientes(i);
     }
     lotesRestantes--;
-    this->ui->Contador_Lotes->setText(QString::number(lotesRestantes));
+    this->ui->Contador_Procesos->setText(QString::number(lotesRestantes));
     
     for (int i = 0; i < procesosListos.size(); i++) {
         llenarFilaPendientes(i, procesosListos[i]);
@@ -60,9 +59,9 @@ void MainWindow::llenarFilaPendientes(int i, Proceso proceso){
     QTableWidgetItem *itemTME = new QTableWidgetItem(QString::number(proceso.tiempoEstimado));
     QTableWidgetItem *itemTT = new QTableWidgetItem(QString::number(proceso.tiempoTranscurrido / 1000.0));
 
-    ui->Tabla_Pendientes->setItem(i, 0, itemID);
-    ui->Tabla_Pendientes->setItem(i, 1, itemTME);
-    ui->Tabla_Pendientes->setItem(i, 2, itemTT);
+    ui->Tabla_Listos->setItem(i, 0, itemID);
+    ui->Tabla_Listos->setItem(i, 1, itemTME);
+    ui->Tabla_Listos->setItem(i, 2, itemTT);
 }
 
 void MainWindow::llenarProcesosListos(){
@@ -75,22 +74,22 @@ void MainWindow::llenarProcesosListos(){
 
 void MainWindow::vaciarFilaPendientes(int fila)
 {
-    ui->Tabla_Pendientes->setItem(fila, 0, new QTableWidgetItem(""));
-    ui->Tabla_Pendientes->setItem(fila, 1, new QTableWidgetItem(""));
-    ui->Tabla_Pendientes->setItem(fila, 2, new QTableWidgetItem(""));
+    ui->Tabla_Listos->setItem(fila, 0, new QTableWidgetItem(""));
+    ui->Tabla_Listos->setItem(fila, 1, new QTableWidgetItem(""));
+    ui->Tabla_Listos->setItem(fila, 2, new QTableWidgetItem(""));
 }
 
 void MainWindow::subirFilasPendientes()
 {
     for (int i = 0; i < 3; i++) {
-        QTableWidgetItem *itemID = ui->Tabla_Pendientes->item(i + 1, 0);
-        QTableWidgetItem *itemTME = ui->Tabla_Pendientes->item(i + 1, 1);
-        QTableWidgetItem *itemTT = ui->Tabla_Pendientes->item(i + 1, 2);
+        QTableWidgetItem *itemID = ui->Tabla_Listos->item(i + 1, 0);
+        QTableWidgetItem *itemTME = ui->Tabla_Listos->item(i + 1, 1);
+        QTableWidgetItem *itemTT = ui->Tabla_Listos->item(i + 1, 2);
         
         if (itemID && itemTME && itemTT) {
-            ui->Tabla_Pendientes->setItem(i, 0, new QTableWidgetItem(itemID->text()));
-            ui->Tabla_Pendientes->setItem(i, 1, new QTableWidgetItem(itemTME->text()));
-            ui->Tabla_Pendientes->setItem(i, 2, new QTableWidgetItem(itemTT->text()));
+            ui->Tabla_Listos->setItem(i, 0, new QTableWidgetItem(itemID->text()));
+            ui->Tabla_Listos->setItem(i, 1, new QTableWidgetItem(itemTME->text()));
+            ui->Tabla_Listos->setItem(i, 2, new QTableWidgetItem(itemTT->text()));
         } else {
             vaciarFilaPendientes(i);
         }
@@ -240,11 +239,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 
 void MainWindow::pausar() {
     timer->stop();
-    //ejecucionActiva = false;
 }
 
 void MainWindow::reanudar() {
-    //ejecucionActiva = true;
     timer->start();
 }
 
