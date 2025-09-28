@@ -91,15 +91,14 @@ void MainWindow::ejecutarSiguienteProceso()
         timer->stop();
         ejecucionActiva = false;
         this->procesoEnEjecucion.reset();
-        vaciarTablaEjecucion();
+        this->ui->Tabla_Ejecucion->limpiar();
         return;
-    }else{
-        if (lotesRestantes>0 && procesosListos.empty()){
-            llenarProcesosListos();
-            this->ui->Tabla_Listos->actualizar(procesosListos);
-            lotesRestantes--;
-            this->ui->Contador_Procesos->setText(QString::number(lotesRestantes));
-        }
+    }
+    if (lotesRestantes>0 && procesosListos.empty()){
+        llenarProcesosListos();
+        this->ui->Tabla_Listos->actualizar(procesosListos);
+        lotesRestantes--;
+        this->ui->Contador_Procesos->setText(QString::number(lotesRestantes));
     }
 
     this->procesoEnEjecucion = procesosListos.front();
@@ -110,11 +109,7 @@ void MainWindow::ejecutarSiguienteProceso()
     
     QString operacion = generarOperacionMatematica(procesoEnEjecucion.numero1, procesoEnEjecucion.numero2, procesoEnEjecucion.indiceOperacion);
     
-    ui->Tabla_Ejecucion->item(0, 0)->setText(QString::number(procesoEnEjecucion.ID));
-    ui->Tabla_Ejecucion->item(1, 0)->setText(operacion);
-    ui->Tabla_Ejecucion->item(2, 0)->setText(QString::number(procesoEnEjecucion.tiempoEstimado));
-    ui->Tabla_Ejecucion->item(3, 0)->setText(QString::number(procesoEnEjecucion.tiempoTranscurrido));
-    ui->Tabla_Ejecucion->item(4, 0)->setText(QString::number(procesoEnEjecucion.tiempoEstimado-procesoEnEjecucion.tiempoTranscurrido));
+    ui->Tabla_Ejecucion->mostrarProceso(procesoEnEjecucion, operacion);
 }
 
 void MainWindow::actualizarEjecucion()
@@ -122,11 +117,9 @@ void MainWindow::actualizarEjecucion()
     if (!ejecucionActiva) return;
 
     this->procesoEnEjecucion.value().tiempoTranscurrido += 50;
-    Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
+    const Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
     
-    float tiempoRestante = procesoEnEjecucion.tiempoEstimado * 1000 - procesoEnEjecucion.tiempoTranscurrido;
-    ui->Tabla_Ejecucion->item(3, 0)->setText(QString::number(procesoEnEjecucion.tiempoTranscurrido / 1000.0, 'f', 2));
-    ui->Tabla_Ejecucion->item(4, 0)->setText(QString::number(tiempoRestante / 1000.0, 'f', 2));
+    ui->Tabla_Ejecucion->actualizarTiempos(procesoEnEjecucion);
     
     static int tiempoTotal = 0;
     tiempoTotal += 50;
@@ -147,10 +140,6 @@ void MainWindow::terminarProcesoActual(){
     agregarProcesoFinalizados(procesoEnEjecucion, operacion, resultado);
 }
 
-void MainWindow::vaciarTablaEjecucion(){
-    for(int i = 0; i<ui->Tabla_Ejecucion->rowCount();i++)
-    ui->Tabla_Ejecucion->setItem(i, 0, new QTableWidgetItem(""));
-}
 
 void MainWindow::agregarProcesoFinalizados(const Proceso& proceso, const QString& operacion, const QString& resultado)
 {

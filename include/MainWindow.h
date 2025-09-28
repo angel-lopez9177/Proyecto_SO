@@ -38,7 +38,6 @@ private:
     void llenarProcesosListos();
 
     void ejecutarSiguienteProceso();
-    void vaciarTablaEjecucion();
 
     void agregarProcesoFinalizados(const Proceso& proceso, const QString& operacion, const QString& resultado);
     void terminarProcesoActual();
