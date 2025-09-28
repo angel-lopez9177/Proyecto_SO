@@ -240,11 +240,11 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 
 void MainWindow::pausar() {
     timer->stop();
-    ejecucionActiva = false;
+    //ejecucionActiva = false;
 }
 
 void MainWindow::reanudar() {
-    ejecucionActiva = true;
+    //ejecucionActiva = true;
     timer->start();
 }
 
