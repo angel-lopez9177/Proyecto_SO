@@ -137,22 +137,9 @@ void MainWindow::terminarProcesoActual(){
     QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
     float r = calcularResultado(operacion);
     QString resultado = QString::number(r);
-    agregarProcesoFinalizados(procesoEnEjecucion, operacion, resultado);
+    ui->Tabla_Terminados->agregarProceso(procesoEnEjecucion, operacion, resultado, totalLotes - lotesRestantes);
 }
 
-
-void MainWindow::agregarProcesoFinalizados(const Proceso& proceso, const QString& operacion, const QString& resultado)
-{
-    int row = ui->Tabla_Terminados->rowCount();
-    ui->Tabla_Terminados->insertRow(row);
-
-    
-    ui->Tabla_Terminados->setItem(row, 0, new QTableWidgetItem(QString::number(proceso.ID)));
-    ui->Tabla_Terminados->setItem(row, 1, new QTableWidgetItem(operacion));
-    ui->Tabla_Terminados->setItem(row, 2, new QTableWidgetItem(resultado));
-    ui->Tabla_Terminados->setItem(row, 3, new QTableWidgetItem(QString::number(totalLotes-lotesRestantes)));
-
-}
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
     switch(event->key()) {
@@ -186,7 +173,7 @@ void MainWindow::error(){
         Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
         QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
         QString resultado = QString("Error");
-        agregarProcesoFinalizados(procesoEnEjecucion, operacion, resultado);
+        ui->Tabla_Terminados->agregarProceso(procesoEnEjecucion, operacion, resultado, totalLotes - lotesRestantes);
         ejecutarSiguienteProceso();
     }
     return;

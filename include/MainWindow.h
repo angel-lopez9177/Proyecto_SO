@@ -39,7 +39,6 @@ private:
 
     void ejecutarSiguienteProceso();
 
-    void agregarProcesoFinalizados(const Proceso& proceso, const QString& operacion, const QString& resultado);
     void terminarProcesoActual();
 
     QString generarOperacionMatematica(int num1, int num2, int op);
