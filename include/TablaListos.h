@@ -2,7 +2,6 @@
 #define TABLALISTOS_H
 
 #include "TablaBase.h"
-#include "Proceso.h"
 #include <deque>
 
 class TablaListos : public TablaBase {

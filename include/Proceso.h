@@ -2,7 +2,6 @@
 #define PROCESO_H
 
 #include <QString>
-#include <optional>
 
 struct Proceso
 {
@@ -18,9 +17,13 @@ struct Proceso
         int numero1;
         int indiceOperacion;
         int numero2;
-        float tiempoEstimado;
+        int tiempoEstimado;
         int ID;
-        float tiempoTranscurrido;
+        int tiempoTranscurrido;
+        int tiempoBloqueado;
+
+        Proceso() : numero1(0), indiceOperacion(0), numero2(0), tiempoEstimado(0), ID(0), tiempoTranscurrido(0), tiempoBloqueado(0) {}
+        Proceso(int num1, int indiceOp, int num2, int TE, int id) : numero1(num1), indiceOperacion(indiceOp), numero2(num2), tiempoEstimado(TE), ID(id), tiempoTranscurrido(0), tiempoBloqueado(0) {}
 };
 
 
