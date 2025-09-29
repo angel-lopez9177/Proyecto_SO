@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "VentanaDatos.h"
+#include "GestorOperaciones.h"
 
 #define MAX_PROCESOS_EN_MEMORIA 4
 #define TIEMPO_ACTUALIZACION 50 // ms
@@ -16,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     procesoEnEjecucion.reset();
+    tablaResultados = new TablaResultados();
 
     this->setFocusPolicy(Qt::StrongFocus);
     this->setCentralWidget(this->ui->centralwidget);
@@ -27,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    delete tablaResultados; 
     delete ui;
 }
 
@@ -40,40 +43,12 @@ void MainWindow::agregarProceso(){
     if (procesos.empty()) return;
     Proceso proceso = procesos.front();
     procesos.pop_front();
+
+    proceso.tiempoLlegada = tiempoTotal;
+
     procesosListos.push_back(proceso);
     this->ui->Tabla_Listos->pushBack(proceso);
     procesosEnMemoria++;
-}
-
-QString MainWindow::generarOperacionMatematica(int num1, int num2, int op)
-{
-    switch (op) {
-    case Proceso::SUMA: return QString("%1 + %2").arg(num1).arg(num2);
-    case Proceso::RESTA: return QString("%1 - %2").arg(num1).arg(num2);
-    case Proceso::MULTIPLICACION: return QString("%1 * %2").arg(num1).arg(num2);
-    case Proceso::DIVISION: return QString("%1 / %2").arg(num1).arg(num2);
-    case Proceso::MODULO: return QString("%1 % %2").arg(num1).arg(num2);
-    case Proceso::POTENCIA: return QString("%1 ^ %2").arg(num1).arg(num2);
-    default: return QString("%1 + %2").arg(num1).arg(num2);
-    }
-}
-
-float MainWindow::calcularResultado(const QString& operacion)
-{
-    if (operacion.contains('+')) {
-        return operacion.split('+')[0].toInt() + operacion.split('+')[1].toInt();
-    } else if (operacion.contains('-')) {
-        return operacion.split('-')[0].toInt() - operacion.split('-')[1].toInt();
-    } else if (operacion.contains('*')) {
-        return operacion.split('*')[0].toInt() * operacion.split('*')[1].toInt();
-    } else if (operacion.contains('/')) {
-        return operacion.split('/')[0].toFloat() / operacion.split('/')[1].toFloat();
-    } else if (operacion.contains('^')) {
-        return pow(operacion.split('^')[0].toInt(), operacion.split('^')[1].toInt());
-    } else if (operacion.contains('%')) {
-        return operacion.split('%')[0].toInt() % operacion.split('%')[1].toInt();
-    }
-    return 0;
 }
 
 void MainWindow::comenzarEjecucion(){
@@ -91,6 +66,8 @@ void MainWindow::ejecutarSiguienteProceso()
         ejecucionActiva = false;
         this->procesoEnEjecucion.reset();
         this->ui->Tabla_Ejecucion->limpiar();
+        tablaResultados->actualizarTabla(procesosFinalizados);
+        tablaResultados->show();
         return;
     }
     while (procesosEnMemoria < MAX_PROCESOS_EN_MEMORIA && !procesos.empty()){
@@ -101,10 +78,14 @@ void MainWindow::ejecutarSiguienteProceso()
         this->procesoEnEjecucion = procesosListos.front();
         procesosListos.pop_front();
         this->ui->Tabla_Listos->popFront();
+
+        if (this->procesoEnEjecucion.value().tiempoPrimerServicio == -1) {
+            this->procesoEnEjecucion.value().tiempoPrimerServicio = tiempoTotal;
+        }
         
         Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
         
-        QString operacion = generarOperacionMatematica(procesoEnEjecucion.numero1, procesoEnEjecucion.numero2, procesoEnEjecucion.indiceOperacion);
+        QString operacion = GestorOperaciones::generarOperacionMatematica(procesoEnEjecucion);
         
         ui->Tabla_Ejecucion->mostrarProceso(procesoEnEjecucion, operacion);
     }
@@ -137,9 +118,7 @@ void MainWindow::actualizarEjecucion()
         ui->Tabla_Ejecucion->actualizarTiempos(procesoEnEjecucion);
         
         if (procesoEnEjecucion.tiempoTranscurrido >= procesoEnEjecucion.tiempoEstimado) {
-            float r = calcularResultado(ui->Tabla_Ejecucion->item(1, 0)->text());
-            QString resultado = QString::number(r);
-            terminarProcesoActual(resultado);
+            terminarProcesoActual();
             ejecutarSiguienteProceso();
         }
     }else{
@@ -147,13 +126,16 @@ void MainWindow::actualizarEjecucion()
     }
 }
 
-void MainWindow::terminarProcesoActual(QString resultado){
-    Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
+void MainWindow::terminarProcesoActual(){
+    Proceso procesoTerminado = this->procesoEnEjecucion.value();
+    procesoTerminado.tiempoFinalizacion = tiempoTotal;
+    procesosFinalizados.append(procesoTerminado);
     QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
+    QString resultado = GestorOperaciones::calcularResultado(procesoTerminado);
     procesosEnMemoria--;
     this->procesoEnEjecucion.reset();
     this->ui->Tabla_Ejecucion->limpiar();
-    ui->Tabla_Terminados->agregarProceso(procesoEnEjecucion, operacion, resultado);
+    ui->Tabla_Terminados->agregarProceso(procesoTerminado, operacion, resultado);
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
@@ -185,8 +167,7 @@ void MainWindow::reanudar() {
 
 void MainWindow::error(){
     if (this->procesoEnEjecucion.has_value()){
-        QString resultado = QString("Error");
-        terminarProcesoActual(resultado);
+        terminarProcesoActual();
         ejecutarSiguienteProceso();
     }
     return;
