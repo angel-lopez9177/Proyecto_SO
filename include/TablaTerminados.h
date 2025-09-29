@@ -8,7 +8,7 @@ class TablaTerminados : public TablaBase {
         public:
                 explicit TablaTerminados(QWidget *tabla);
 
-                void agregarProceso(const Proceso& proceso, const QString& operacion, const QString& resultado, int numeroLote);
+                void agregarProceso(const Proceso& proceso, const QString& operacion, const QString& resultado);
         };
 
 #endif // TABLATERMINADOS_H
