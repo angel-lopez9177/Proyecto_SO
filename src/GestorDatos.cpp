@@ -21,16 +21,16 @@ std::list<Proceso> GestorDatos::obtener_procesos(int cantidad)
 
 Proceso GestorDatos::generar_proceso(int ID){
 
-        int operacion = QRandomGenerator::global()->bounded(-1,6);
+        int operacion = QRandomGenerator::global()->bounded(6);
 
-        int valor1 = QRandomGenerator::global()->bounded(-1,100);
+        int valor1 = QRandomGenerator::global()->bounded(100);
         int valor2 = 0;
-        int tiempoEstimado = QRandomGenerator::global()->bounded(5,21) * 1000;
+        int tiempoEstimado = QRandomGenerator::global()->bounded(6,21) * 1000;
 
         if (operacion == GestorOperaciones::DIVISION || operacion == GestorOperaciones::MODULO){
-                valor2 = QRandomGenerator::global()->bounded(0,100);
+                valor2 = QRandomGenerator::global()->bounded(1,100);
         }else{
-                valor2 = QRandomGenerator::global()->bounded(-1,100);
+                valor2 = QRandomGenerator::global()->bounded(100);
         }
 
         Proceso proceso(valor1, operacion, valor2, tiempoEstimado, ID);
