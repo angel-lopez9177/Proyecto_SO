@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1100</width>
+    <width>1130</width>
     <height>300</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
    <enum>Qt::FocusPolicy::StrongFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>Ejecucion por lotes</string>
+   <string>FCFS</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="focusPolicy">
@@ -399,7 +399,7 @@
           <number>95</number>
          </attribute>
          <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>75</number>
+          <number>95</number>
          </attribute>
          <attribute name="horizontalHeaderHighlightSections">
           <bool>true</bool>
