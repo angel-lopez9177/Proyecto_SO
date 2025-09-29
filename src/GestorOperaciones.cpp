@@ -1,4 +1,5 @@
 #include "GestorOperaciones.h"
+#include <iostream>
 
 QString GestorOperaciones::generarOperacionMatematica(const Proceso& proceso)
 {
@@ -18,6 +19,7 @@ QString GestorOperaciones::generarOperacionMatematica(const Proceso& proceso)
 
 QString GestorOperaciones::calcularResultado(const Proceso& proceso)
 {
+        if (proceso.tiempoTranscurrido < proceso.tiempoEstimado) return "Error";
         int num1 = proceso.numero1;
         int num2 = proceso.numero2;
         Operacion op = static_cast<Operacion>(proceso.indiceOperacion);
