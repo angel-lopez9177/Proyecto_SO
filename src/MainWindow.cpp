@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "VentanaDatos.h"
+#include "GestorOperaciones.h"
 
 #define MAX_PROCESOS_EN_MEMORIA 4
 #define TIEMPO_ACTUALIZACION 50 // ms
@@ -43,37 +44,6 @@ void MainWindow::agregarProceso(){
     procesosListos.push_back(proceso);
     this->ui->Tabla_Listos->pushBack(proceso);
     procesosEnMemoria++;
-}
-
-QString MainWindow::generarOperacionMatematica(int num1, int num2, int op)
-{
-    switch (op) {
-    case Proceso::SUMA: return QString("%1 + %2").arg(num1).arg(num2);
-    case Proceso::RESTA: return QString("%1 - %2").arg(num1).arg(num2);
-    case Proceso::MULTIPLICACION: return QString("%1 * %2").arg(num1).arg(num2);
-    case Proceso::DIVISION: return QString("%1 / %2").arg(num1).arg(num2);
-    case Proceso::MODULO: return QString("%1 % %2").arg(num1).arg(num2);
-    case Proceso::POTENCIA: return QString("%1 ^ %2").arg(num1).arg(num2);
-    default: return QString("%1 + %2").arg(num1).arg(num2);
-    }
-}
-
-float MainWindow::calcularResultado(const QString& operacion)
-{
-    if (operacion.contains('+')) {
-        return operacion.split('+')[0].toInt() + operacion.split('+')[1].toInt();
-    } else if (operacion.contains('-')) {
-        return operacion.split('-')[0].toInt() - operacion.split('-')[1].toInt();
-    } else if (operacion.contains('*')) {
-        return operacion.split('*')[0].toInt() * operacion.split('*')[1].toInt();
-    } else if (operacion.contains('/')) {
-        return operacion.split('/')[0].toFloat() / operacion.split('/')[1].toFloat();
-    } else if (operacion.contains('^')) {
-        return pow(operacion.split('^')[0].toInt(), operacion.split('^')[1].toInt());
-    } else if (operacion.contains('%')) {
-        return operacion.split('%')[0].toInt() % operacion.split('%')[1].toInt();
-    }
-    return 0;
 }
 
 void MainWindow::comenzarEjecucion(){

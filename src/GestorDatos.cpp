@@ -1,4 +1,5 @@
-#include "gestorDatos.h"
+#include "GestorDatos.h"
+#include "GestorOperaciones.h"
 #include "VentanaDatos.h"
 #include <iostream>
 #include <QMessageBox>
@@ -26,7 +27,7 @@ Proceso GestorDatos::generar_proceso(int ID){
         int valor2 = 0;
         int tiempoEstimado = QRandomGenerator::global()->bounded(5,21) * 1000;
 
-        if (operacion == Proceso::DIVISION || operacion == Proceso::MODULO){
+        if (operacion == GestorOperaciones::DIVISION || operacion == GestorOperaciones::MODULO){
                 valor2 = QRandomGenerator::global()->bounded(0,100);
         }else{
                 valor2 = QRandomGenerator::global()->bounded(-1,100);

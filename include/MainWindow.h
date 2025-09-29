@@ -6,7 +6,6 @@
 #include "Proceso.h"
 #include <iostream>
 #include <queue>
-#include <math.h>
 #include <QKeyEvent>
 
 namespace Ui {
