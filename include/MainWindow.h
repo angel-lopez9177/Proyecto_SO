@@ -5,8 +5,10 @@
 #include <QTimer>
 #include "Proceso.h"
 #include <iostream>
-#include <queue>
+#include <deque>
+#include <QList>
 #include <QKeyEvent>
+#include "TablaResultados.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,10 +28,11 @@ public:
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
+    TablaResultados* tablaResultados;
     std::list<Proceso> procesos;
     std::deque<Proceso> procesosListos;
     std::deque<Proceso> procesosBloqueados;
-    std::queue<Proceso> procesosFinalizados;
+    QList<Proceso> procesosFinalizados;
     std::optional<Proceso> procesoEnEjecucion;
     int procesosEnMemoria;
     bool ejecucionActiva;
@@ -39,10 +42,7 @@ private:
 
     void ejecutarSiguienteProceso();
 
-    void terminarProcesoActual(QString resultado);
-
-    QString generarOperacionMatematica(int num1, int num2, int op);
-    float calcularResultado(const QString& operacion);
+    void terminarProcesoActual();
 
     void pausar();
     void reanudar();
