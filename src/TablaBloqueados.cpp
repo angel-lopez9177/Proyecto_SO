@@ -11,6 +11,10 @@ void TablaBloqueados::agregar(const int fila, const Proceso& proceso){
     this->setItem(fila, 1, new QTableWidgetItem(QString::number(proceso.tiempoBloqueado / 1000.0, 'f', 2)));
 }
 
+void TablaBloqueados::actualizarTiempo(const int fila, const int tiempo) {
+        this->item(fila, 1)->setText(QString::number(tiempo / 1000.0, 'f', 2));
+}
+
 void TablaBloqueados::pushBack(const Proceso& proceso) {
     int fila = this->rowCount();
     this->insertRow(fila);

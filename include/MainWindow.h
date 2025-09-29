@@ -29,11 +29,12 @@ private:
     QTimer *timer;
     std::list<Proceso> procesos;
     std::deque<Proceso> procesosListos;
-    std::queue<Proceso> procesosBloqueados;
+    std::deque<Proceso> procesosBloqueados;
     std::queue<Proceso> procesosFinalizados;
     std::optional<Proceso> procesoEnEjecucion;
     int procesosEnMemoria;
     bool ejecucionActiva;
+    int tiempoTotal;
 
     void agregarProceso();
 

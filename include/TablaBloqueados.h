@@ -12,5 +12,6 @@ class TablaBloqueados : public TablaBase {
                 void agregar(const int fila, const Proceso& proceso);
                 void pushBack(const Proceso& proceso);
                 void pushFront(const Proceso& proceso);
+                void actualizarTiempo(const int fila, const int tiempo);
         };
 #endif // TABLABLOQUEADOS_H

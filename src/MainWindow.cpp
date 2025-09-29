@@ -3,12 +3,15 @@
 #include "VentanaDatos.h"
 
 #define MAX_PROCESOS_EN_MEMORIA 4
+#define TIEMPO_ACTUALIZACION 50 // ms
+#define TIEMPO_BLOQUEO 8000 // ms
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
     , ejecucionActiva(false)
     , procesosEnMemoria(0)
+    , tiempoTotal(0)
 {
     ui->setupUi(this);
 
@@ -18,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setCentralWidget(this->ui->centralwidget);
 
     timer = new QTimer(this);
-    timer->setInterval(50); // 50 ms
+    timer->setInterval(TIEMPO_ACTUALIZACION);
     connect(timer, &QTimer::timeout, this, &MainWindow::actualizarEjecucion);
 }
 
@@ -83,6 +86,7 @@ void MainWindow::comenzarEjecucion(){
 void MainWindow::ejecutarSiguienteProceso()
 {
     if (procesos.empty() && procesosListos.empty() && procesosBloqueados.empty()){
+        std::cout << "No hay más procesos para ejecutar." << std::endl;
         timer->stop();
         ejecucionActiva = false;
         this->procesoEnEjecucion.reset();
@@ -93,36 +97,52 @@ void MainWindow::ejecutarSiguienteProceso()
         agregarProceso();
     }
     this->ui->Contador_Procesos->setText(QString::number(procesos.size()));
-
-    this->procesoEnEjecucion = procesosListos.front();
-    procesosListos.pop_front();
-    this->ui->Tabla_Listos->popFront();
-    
-    Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
-    
-    QString operacion = generarOperacionMatematica(procesoEnEjecucion.numero1, procesoEnEjecucion.numero2, procesoEnEjecucion.indiceOperacion);
-    
-    ui->Tabla_Ejecucion->mostrarProceso(procesoEnEjecucion, operacion);
+    if (!(procesosListos.empty())){
+        this->procesoEnEjecucion = procesosListos.front();
+        procesosListos.pop_front();
+        this->ui->Tabla_Listos->popFront();
+        
+        Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
+        
+        QString operacion = generarOperacionMatematica(procesoEnEjecucion.numero1, procesoEnEjecucion.numero2, procesoEnEjecucion.indiceOperacion);
+        
+        ui->Tabla_Ejecucion->mostrarProceso(procesoEnEjecucion, operacion);
+    }
 }
 
 void MainWindow::actualizarEjecucion()
 {
     if (!ejecucionActiva) return;
 
-    this->procesoEnEjecucion.value().tiempoTranscurrido += 50;
-    const Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
-    
-    ui->Tabla_Ejecucion->actualizarTiempos(procesoEnEjecucion);
-    
-    static int tiempoTotal = 0;
-    tiempoTotal += 50;
-
+    tiempoTotal += TIEMPO_ACTUALIZACION;
     ui->Contador_Tiempo->setText(QString::number(tiempoTotal / 1000.0, 'f', 2) + " s");
-    
-    if (procesoEnEjecucion.tiempoTranscurrido >= procesoEnEjecucion.tiempoEstimado) {
-        float r = calcularResultado(ui->Tabla_Ejecucion->item(1, 0)->text());
-        QString resultado = QString::number(r);
-        terminarProcesoActual(resultado);
+
+    if (!(procesosBloqueados.empty())){ 
+        for(long unsigned int i = 0; i < procesosBloqueados.size(); i++){
+            procesosBloqueados[i].tiempoBloqueado += TIEMPO_ACTUALIZACION;
+            this->ui->Tabla_Bloqueados->actualizarTiempo(i, procesosBloqueados[i].tiempoBloqueado);
+        }
+        if (procesosBloqueados[0].tiempoBloqueado >= TIEMPO_BLOQUEO){
+            procesosBloqueados[0].tiempoBloqueado = 0;
+            procesosListos.push_back(procesosBloqueados[0]);
+            this->ui->Tabla_Listos->pushBack(procesosBloqueados[0]);
+            procesosBloqueados.pop_front();
+            this->ui->Tabla_Bloqueados->popFront();
+        }
+    }
+    if (this->procesoEnEjecucion.has_value()){
+        this->procesoEnEjecucion.value().tiempoTranscurrido += TIEMPO_ACTUALIZACION;
+        const Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
+        
+        ui->Tabla_Ejecucion->actualizarTiempos(procesoEnEjecucion);
+        
+        if (procesoEnEjecucion.tiempoTranscurrido >= procesoEnEjecucion.tiempoEstimado) {
+            float r = calcularResultado(ui->Tabla_Ejecucion->item(1, 0)->text());
+            QString resultado = QString::number(r);
+            terminarProcesoActual(resultado);
+            ejecutarSiguienteProceso();
+        }
+    }else{
         ejecutarSiguienteProceso();
     }
 }
@@ -132,6 +152,7 @@ void MainWindow::terminarProcesoActual(QString resultado){
     QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
     procesosEnMemoria--;
     this->procesoEnEjecucion.reset();
+    this->ui->Tabla_Ejecucion->limpiar();
     ui->Tabla_Terminados->agregarProceso(procesoEnEjecucion, operacion, resultado);
 }
 
@@ -174,8 +195,10 @@ void MainWindow::error(){
 void MainWindow::interrupcion(){
     if (this->procesoEnEjecucion.has_value()){
         Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
-        this->ui->Tabla_Listos->pushBack(procesoEnEjecucion);
-        procesosListos.push_back(procesoEnEjecucion);
+        this->ui->Tabla_Bloqueados->pushBack(procesoEnEjecucion);
+        procesosBloqueados.push_back(procesoEnEjecucion);
+        this->ui->Tabla_Ejecucion->limpiar();
+        this->procesoEnEjecucion.reset();
         ejecutarSiguienteProceso();
     }
     return;
