@@ -2,12 +2,13 @@
 #include "ui_MainWindow.h"
 #include "VentanaDatos.h"
 
+#define MAX_PROCESOS_EN_MEMORIA 4
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , lotesRestantes(0)
-    , totalLotes(0)
     , ejecucionActiva(false)
+    , procesosEnMemoria(0)
 {
     ui->setupUi(this);
 
@@ -15,7 +16,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->setFocusPolicy(Qt::StrongFocus);
     this->setCentralWidget(this->ui->centralwidget);
-    this->ui->centralwidget->installEventFilter(this);
 
     timer = new QTimer(this);
     timer->setInterval(50); // 50 ms
@@ -31,20 +31,15 @@ MainWindow::~MainWindow()
 void MainWindow::setProcesos(const std::list<Proceso>& procesos)
 {
     this->procesos = procesos;
-    int totalProcesos = procesos.size();
-    this->totalLotes = ((totalProcesos-1) / 4) + 1;
-    this->lotesRestantes = this->totalLotes;
-    
-    ui->Contador_Procesos->setText(QString::number(lotesRestantes));
 }
 
-
-void MainWindow::llenarProcesosListos(){
-    int elementosRestantes = static_cast<int>(procesos.size());
-    for(int i = 0; i<std::min(4, elementosRestantes); i++){
-        procesosListos.push_back(procesos.front());
-        procesos.pop_front();
-    }
+void MainWindow::agregarProceso(){
+    if (procesos.empty()) return;
+    Proceso proceso = procesos.front();
+    procesos.pop_front();
+    procesosListos.push_back(proceso);
+    this->ui->Tabla_Listos->pushBack(proceso);
+    procesosEnMemoria++;
 }
 
 QString MainWindow::generarOperacionMatematica(int num1, int num2, int op)
@@ -87,19 +82,17 @@ void MainWindow::comenzarEjecucion(){
 
 void MainWindow::ejecutarSiguienteProceso()
 {
-    if (procesos.empty() && procesosListos.empty()) {
+    if (procesos.empty() && procesosListos.empty() && procesosBloqueados.empty()){
         timer->stop();
         ejecucionActiva = false;
         this->procesoEnEjecucion.reset();
         this->ui->Tabla_Ejecucion->limpiar();
         return;
     }
-    if (lotesRestantes>0 && procesosListos.empty()){
-        llenarProcesosListos();
-        this->ui->Tabla_Listos->actualizar(procesosListos);
-        lotesRestantes--;
-        this->ui->Contador_Procesos->setText(QString::number(lotesRestantes));
+    while (procesosEnMemoria < MAX_PROCESOS_EN_MEMORIA && !procesos.empty()){
+        agregarProceso();
     }
+    this->ui->Contador_Procesos->setText(QString::number(procesos.size()));
 
     this->procesoEnEjecucion = procesosListos.front();
     procesosListos.pop_front();
@@ -126,20 +119,21 @@ void MainWindow::actualizarEjecucion()
 
     ui->Contador_Tiempo->setText(QString::number(tiempoTotal / 1000.0, 'f', 2) + " s");
     
-    if (procesoEnEjecucion.tiempoTranscurrido >= procesoEnEjecucion.tiempoEstimado * 1000) {
-        terminarProcesoActual();
+    if (procesoEnEjecucion.tiempoTranscurrido >= procesoEnEjecucion.tiempoEstimado) {
+        float r = calcularResultado(ui->Tabla_Ejecucion->item(1, 0)->text());
+        QString resultado = QString::number(r);
+        terminarProcesoActual(resultado);
         ejecutarSiguienteProceso();
     }
 }
 
-void MainWindow::terminarProcesoActual(){
+void MainWindow::terminarProcesoActual(QString resultado){
     Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
     QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
-    float r = calcularResultado(operacion);
-    QString resultado = QString::number(r);
-    ui->Tabla_Terminados->agregarProceso(procesoEnEjecucion, operacion, resultado, totalLotes - lotesRestantes);
+    procesosEnMemoria--;
+    this->procesoEnEjecucion.reset();
+    ui->Tabla_Terminados->agregarProceso(procesoEnEjecucion, operacion, resultado);
 }
-
 
 void MainWindow::keyPressEvent(QKeyEvent *event) {
     switch(event->key()) {
@@ -170,10 +164,8 @@ void MainWindow::reanudar() {
 
 void MainWindow::error(){
     if (this->procesoEnEjecucion.has_value()){
-        Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
-        QString operacion = ui->Tabla_Ejecucion->item(1, 0)->text();
         QString resultado = QString("Error");
-        ui->Tabla_Terminados->agregarProceso(procesoEnEjecucion, operacion, resultado, totalLotes - lotesRestantes);
+        terminarProcesoActual(resultado);
         ejecutarSiguienteProceso();
     }
     return;
@@ -189,13 +181,3 @@ void MainWindow::interrupcion(){
     return;
 }
 
-bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
-    if (event->type() == QEvent::KeyPress) {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-        if (keyEvent->key() == Qt::Key_P) {
-            qDebug() << "En el central widget";
-            return true;
-        }
-    }
-    return QMainWindow::eventFilter(obj, event);
-}

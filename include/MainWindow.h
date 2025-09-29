@@ -29,17 +29,17 @@ private:
     QTimer *timer;
     std::list<Proceso> procesos;
     std::deque<Proceso> procesosListos;
+    std::queue<Proceso> procesosBloqueados;
     std::queue<Proceso> procesosFinalizados;
     std::optional<Proceso> procesoEnEjecucion;
-    int lotesRestantes;
-    int totalLotes;
+    int procesosEnMemoria;
     bool ejecucionActiva;
 
-    void llenarProcesosListos();
+    void agregarProceso();
 
     void ejecutarSiguienteProceso();
 
-    void terminarProcesoActual();
+    void terminarProcesoActual(QString resultado);
 
     QString generarOperacionMatematica(int num1, int num2, int op);
     float calcularResultado(const QString& operacion);
@@ -54,7 +54,6 @@ private slots:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
-    bool eventFilter(QObject *obj, QEvent *event) override;
 
 };
 #endif // MAINWINDOW_H
