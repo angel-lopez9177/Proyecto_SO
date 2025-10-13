@@ -9,6 +9,7 @@
 #include <QList>
 #include <QKeyEvent>
 #include "TablaResultados.h"
+#include "GestorDatos.h"
 
 namespace Ui {
 class MainWindow;
@@ -49,6 +50,7 @@ private:
     void error();
     void interrupcion();
     void mostrarTablaResultados();
+    void nuevoProceso();
 
 private slots:
     void actualizarEjecucion();

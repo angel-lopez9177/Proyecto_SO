@@ -11,9 +11,9 @@ class GestorDatos
 {
 public:
     static QList<Proceso> obtener_procesos(int cantidad);
+    static Proceso generar_proceso();
 
 private:
-    static Proceso generar_proceso();
     static int ID;
 };
 
