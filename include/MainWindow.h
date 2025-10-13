@@ -5,9 +5,10 @@
 #include <QTimer>
 #include "Proceso.h"
 #include <iostream>
-#include <queue>
-#include <math.h>
+#include <deque>
+#include <QList>
 #include <QKeyEvent>
+#include "TablaResultados.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,28 +28,21 @@ public:
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
+    TablaResultados* tablaResultados;
     std::list<Proceso> procesos;
     std::deque<Proceso> procesosListos;
-    std::queue<Proceso> procesosFinalizados;
+    std::deque<Proceso> procesosBloqueados;
+    QList<Proceso> procesosFinalizados;
     std::optional<Proceso> procesoEnEjecucion;
-    int lotesRestantes;
-    int totalLotes;
+    int procesosEnMemoria;
     bool ejecucionActiva;
+    int tiempoTotal;
 
-    void llenarTablaPendientes();
-    void llenarFilaPendientes(int i, Proceso proceso);
-    void llenarProcesosListos();
-    void vaciarFilaPendientes(int fila);
-    void subirFilasPendientes();
+    void agregarProceso();
 
     void ejecutarSiguienteProceso();
-    void vaciarTablaEjecucion();
 
-    void agregarProcesoFinalizados(const Proceso& proceso, const QString& operacion, const QString& resultado);
     void terminarProcesoActual();
-
-    QString generarOperacionMatematica(int num1, int num2, int op);
-    float calcularResultado(const QString& operacion);
 
     void pausar();
     void reanudar();
@@ -60,7 +54,6 @@ private slots:
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
-    bool eventFilter(QObject *obj, QEvent *event) override;
 
 };
 #endif // MAINWINDOW_H
