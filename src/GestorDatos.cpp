@@ -13,7 +13,6 @@ QList<Proceso> GestorDatos::obtener_procesos(int cantidad)
     for (int i = 0; i < cantidad; i++) {
         Proceso procesoOpt = GestorDatos::generar_proceso();
         procesos.push_back(procesoOpt);
-        ID++;
     }
     return procesos;
 }
@@ -31,7 +30,7 @@ Proceso GestorDatos::generar_proceso(){
                 valor2 = QRandomGenerator::global()->bounded(100);
         }
 
-        Proceso proceso(valor1, operacion, valor2, tiempoEstimado, ID);
+        Proceso proceso(valor1, operacion, valor2, tiempoEstimado, ID++);
         
         return proceso;
 }

@@ -155,6 +155,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         case Qt::Key_B:
             mostrarTablaResultados();
             break;
+        case Qt::Key_N:
+            nuevoProceso();
+            break;
         default:
             QMainWindow::keyPressEvent(event);
     }
@@ -193,5 +196,17 @@ void MainWindow::interrupcion(){
         ejecutarSiguienteProceso();
     }
     return;
+}
+
+void MainWindow::nuevoProceso(){
+    Proceso proceso = GestorDatos::generar_proceso();
+    procesos.append(proceso);
+    this->ui->Contador_Procesos->setText(QString::number(procesos.size()));
+    if (ejecucionActiva && procesosEnMemoria < MAX_PROCESOS_EN_MEMORIA){
+        agregarProceso();
+        if (!this->procesoEnEjecucion.has_value()){
+            ejecutarSiguienteProceso();
+        }
+    }
 }
 
