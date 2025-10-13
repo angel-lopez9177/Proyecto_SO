@@ -5,16 +5,16 @@ QString GestorOperaciones::generarOperacionMatematica(const Proceso& proceso)
 {
         int num1 = proceso.numero1;
         int num2 = proceso.numero2;
-        Operacion op = static_cast<Operacion>(proceso.indiceOperacion);
-        switch (op) {
-                case SUMA: return QString("%1 + %2").arg(num1).arg(num2);
-                case RESTA: return QString("%1 - %2").arg(num1).arg(num2);
-                case MULTIPLICACION: return QString("%1 * %2").arg(num1).arg(num2);
-                case DIVISION: return QString("%1 / %2").arg(num1).arg(num2);
-                case MODULO: return QString("%1 % %2").arg(num1).arg(num2);
-                case POTENCIA: return QString("%1 ^ %2").arg(num1).arg(num2);
-                default: return QString("%1 + %2").arg(num1).arg(num2);
-        }
+	Operacion op = static_cast<Operacion>(proceso.indiceOperacion);
+	switch (op) {
+		case SUMA: return QString("%1 + %2").arg(num1).arg(num2);
+		case RESTA: return QString("%1 - %2").arg(num1).arg(num2);
+		case MULTIPLICACION: return QString("%1 * %2").arg(num1).arg(num2);
+		case DIVISION: return QString("%1 / %2").arg(num1).arg(num2);
+		case MODULO: return QString("%1 % %2").arg(num1).arg(num2);
+		case POTENCIA: return QString("%1 ^ %2").arg(num1).arg(num2);
+		default: return QString("%1 + %2").arg(num1).arg(num2);
+	}
 }
 
 QString GestorOperaciones::calcularResultado(const Proceso& proceso)
