@@ -21,7 +21,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
-    void setProcesos(const std::list<Proceso>& procesos);
+    void setProcesos(const QList<Proceso>& procesos);
     ~MainWindow();
     void comenzarEjecucion();
 
@@ -29,7 +29,7 @@ private:
     Ui::MainWindow *ui;
     QTimer *timer;
     TablaResultados* tablaResultados;
-    std::list<Proceso> procesos;
+    QList<Proceso> procesos;
     std::deque<Proceso> procesosListos;
     std::deque<Proceso> procesosBloqueados;
     QList<Proceso> procesosFinalizados;
@@ -48,6 +48,7 @@ private:
     void reanudar();
     void error();
     void interrupcion();
+    void mostrarTablaResultados();
 
 private slots:
     void actualizarEjecucion();
