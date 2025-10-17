@@ -5,22 +5,19 @@
 #include <QMessageBox>
 #include <QRandomGenerator>
 
-std::list<Proceso> GestorDatos::obtener_procesos(int cantidad)
-{
-    std::list<Proceso> procesos;
-    
-    for (int i = 0; i < cantidad; i++) {
-        
-        Proceso procesoOpt = GestorDatos::generar_proceso(i + 1);
+int GestorDatos::ID = 0;
 
+QList<Proceso> GestorDatos::obtener_procesos(int cantidad)
+{
+    QList<Proceso> procesos;
+    for (int i = 0; i < cantidad; i++) {
+        Proceso procesoOpt = GestorDatos::generar_proceso();
         procesos.push_back(procesoOpt);
     }
-    
     return procesos;
 }
 
-Proceso GestorDatos::generar_proceso(int ID){
-
+Proceso GestorDatos::generar_proceso(){
         int operacion = QRandomGenerator::global()->bounded(6);
 
         int valor1 = QRandomGenerator::global()->bounded(100);
@@ -33,7 +30,7 @@ Proceso GestorDatos::generar_proceso(int ID){
                 valor2 = QRandomGenerator::global()->bounded(100);
         }
 
-        Proceso proceso(valor1, operacion, valor2, tiempoEstimado, ID);
+        Proceso proceso(valor1, operacion, valor2, tiempoEstimado, ID++);
         
         return proceso;
 }

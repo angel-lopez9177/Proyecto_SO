@@ -11,7 +11,6 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);  
     
     MainWindow window; 
-     
     int cantidad = VentanaCantidad::getQuantity();
     if (cantidad == -1) return 0;
 

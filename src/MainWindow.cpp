@@ -34,7 +34,7 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::setProcesos(const std::list<Proceso>& procesos)
+void MainWindow::setProcesos(const QList<Proceso>& procesos)
 {
     this->procesos = procesos;
 }
@@ -152,6 +152,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         case Qt::Key_W:
             error();
             break;
+        case Qt::Key_B:
+            mostrarTablaResultados();
+            break;
+        case Qt::Key_N:
+            nuevoProceso();
+            break;
         default:
             QMainWindow::keyPressEvent(event);
     }
@@ -163,6 +169,13 @@ void MainWindow::pausar() {
 
 void MainWindow::reanudar() {
     timer->start();
+}
+
+void MainWindow::mostrarTablaResultados(){
+    pausar();
+    tablaResultados->setTiempoGlobal(tiempoTotal);
+    tablaResultados->actualizarTabla(procesosFinalizados, procesoEnEjecucion, procesosListos, procesosBloqueados, procesos);
+    tablaResultados->show();
 }
 
 void MainWindow::error(){
@@ -183,5 +196,18 @@ void MainWindow::interrupcion(){
         ejecutarSiguienteProceso();
     }
     return;
+}
+
+void MainWindow::nuevoProceso(){
+    Proceso proceso = GestorDatos::generar_proceso();
+    procesos.append(proceso);
+    this->ui->Contador_Procesos->setText(QString::number(procesos.size()));
+    if (ejecucionActiva && procesosEnMemoria < MAX_PROCESOS_EN_MEMORIA){
+        agregarProceso();
+        this->ui->Contador_Procesos->setText(QString::number(procesos.size()));
+        if (!this->procesoEnEjecucion.has_value()){
+            ejecutarSiguienteProceso();
+        }
+    }
 }
 
