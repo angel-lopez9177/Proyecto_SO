@@ -1,6 +1,7 @@
 #include "VentanaDatos.h"
 #include "ui_VentanaDatos.h"
 #include <QMessageBox>
+#include "GestorOperaciones.h"
 
 std::optional<Proceso> VentanaDatos::resultadoStatico = std::nullopt;
 
@@ -59,7 +60,8 @@ void VentanaDatos::boton_aceptar_clicked()
         if (valor2 < 0) {
             throw std::runtime_error("Tiempo de ejecución inválido");
         }
-        if ((operacion == Proceso::DIVISION || operacion == Proceso::MODULO) && valor2 == 0){
+      
+        if ((operacion == GestorOperaciones::DIVISION || operacion == GestorOperaciones::MODULO) && valor2 == 0){
             throw std::runtime_error("No se permite division entre 0");
         }
 

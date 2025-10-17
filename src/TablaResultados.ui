@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TablaResultados</class>
+ <widget class="QWidget" name="TablaResultados">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1064</width>
+    <height>419</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>TablaResultados</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QTableWidget" name="Tabla_Resultados">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::NoFocus</enum>
+     </property>
+     <attribute name="horizontalHeaderCascadingSectionResizes">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="horizontalHeaderMinimumSectionSize">
+      <number>50</number>
+     </attribute>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>95</number>
+     </attribute>
+     <attribute name="horizontalHeaderHighlightSections">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>ID</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Operacion</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Resultado</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>T. Llegada</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>T. Finalizacion</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>T. Retorno</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>T. Respuesta</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>T. Espera</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>T. Servicio</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>T. Restante</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>TME</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

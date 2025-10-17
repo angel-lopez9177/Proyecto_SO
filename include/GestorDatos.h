@@ -1,17 +1,20 @@
 #ifndef GESTORDATOS_H
 #define GESTORDATOS_H
 
-#include <list>
+#include <QList>
 #include <optional>
 #include "Proceso.h"
+
+
 
 class GestorDatos
 {
 public:
-    static std::list<Proceso> obtener_procesos(int cantidad);
+    static QList<Proceso> obtener_procesos(int cantidad);
+    static Proceso generar_proceso();
 
 private:
-    static Proceso generar_proceso(int ID);
+    static int ID;
 };
 
 #endif
