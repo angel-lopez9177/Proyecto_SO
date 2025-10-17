@@ -57,13 +57,15 @@ void TablaResultados::actualizarTabla(const QList<Proceso>& procesosTerminados){
 void TablaResultados::agregarProceso(const Proceso& p, int i){
     int tiempoRetorno = p.tiempoFinalizacion - p.tiempoLlegada;
     int tiempoServicio = p.tiempoTranscurrido;
-    int tiempoEspera = tiempoGlobal - p.tiempoLlegada - tiempoServicio;
     int tiempoRespuesta = (p.tiempoPrimerServicio != -1) ? (p.tiempoPrimerServicio - p.tiempoLlegada) : -1;
     int tiempoRestante = -1;
+    int tiempoEspera = -1;
     if (p.tiempoFinalizacion != -1){
         tiempoRestante = 0;
+        tiempoEspera = tiempoRetorno - tiempoServicio;
     }else if(p.tiempoFinalizacion == -1 && p.tiempoLlegada != -1){
         tiempoRestante = p.tiempoEstimado - p.tiempoTranscurrido;
+        tiempoEspera = tiempoGlobal - p.tiempoLlegada - tiempoServicio;
     }
     QString operacion = GestorOperaciones::generarOperacionMatematica(p);
     QString resultado = GestorOperaciones::calcularResultado(p);
