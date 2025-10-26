@@ -204,6 +204,7 @@ void MainWindow::nuevoProceso(){
     this->ui->Contador_Procesos->setText(QString::number(procesos.size()));
     if (ejecucionActiva && procesosEnMemoria < MAX_PROCESOS_EN_MEMORIA){
         agregarProceso();
+        this->ui->Contador_Procesos->setText(QString::number(procesos.size()));
         if (!this->procesoEnEjecucion.has_value()){
             ejecutarSiguienteProceso();
         }
