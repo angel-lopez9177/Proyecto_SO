@@ -11,10 +11,10 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);  
     
     MainWindow window; 
-    int cantidad = VentanaCantidad::getQuantity();
-    if (cantidad == -1) return 0;
+    Datos cantidad = VentanaCantidad::getQuantity();
+    if (cantidad.selectedQuantity == -1 || cantidad.quantumTiempo == -1) return 0;
 
-    auto listaProcesos = GestorDatos::obtener_procesos(cantidad);
+    auto listaProcesos = GestorDatos::obtener_procesos(cantidad.selectedQuantity);
 
     int i = 0;
     for (Proceso proceso : listaProcesos) {

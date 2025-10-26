@@ -8,6 +8,15 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDialogButtonBox>
+#include <QMessageBox>
+
+struct Datos{
+
+    int selectedQuantity;
+    int quantumTiempo;
+
+    Datos(int x, int y) : selectedQuantity(x), quantumTiempo(y) {}
+};
 
 class VentanaCantidad : public QDialog
 {
@@ -17,15 +26,17 @@ public:
     explicit VentanaCantidad();
     ~VentanaCantidad();
 
-    static int getQuantity();
+    static Datos datos;
+    static Datos getQuantity();
 
 private slots:
     void onConfirmClicked();
 
 private:
-    QSpinBox *spinBox;
+    QSpinBox *spinBox_procesos;
+    QSpinBox *spinBox_quantum;
     QPushButton *confirmButton;
-    int selectedQuantity;
+
 };
 
 #endif // VENTANACANTIDAD_H
