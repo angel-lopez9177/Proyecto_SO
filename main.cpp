@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
     window.show();
     window.setFocus();
     window.setProcesos(listaProcesos);
+    window.setQuantum(cantidad.quantumTiempo);
     window.comenzarEjecucion();
     
     return app.exec();

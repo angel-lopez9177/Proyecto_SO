@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ejecucionActiva(false)
     , procesosEnMemoria(0)
     , tiempoTotal(0)
+    , quantum(4000)
 {
     ui->setupUi(this);
 

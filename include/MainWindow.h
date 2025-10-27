@@ -23,6 +23,7 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
 
     void setProcesos(const QList<Proceso>& procesos);
+    void setQuantum(int Q) {quantum = Q*1000; return;}
     ~MainWindow();
     void comenzarEjecucion();
 
@@ -38,6 +39,7 @@ private:
     int procesosEnMemoria;
     bool ejecucionActiva;
     int tiempoTotal;
+    int quantum;
 
     void agregarProceso();
 
