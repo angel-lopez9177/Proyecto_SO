@@ -44,6 +44,8 @@ private:
     void agregarProceso();
 
     void ejecutarSiguienteProceso();
+    void quitarProcesoEjecucion();
+    void reemplazarProcesoEjecucion();
 
     void terminarProcesoActual();
 

@@ -114,16 +114,35 @@ void MainWindow::actualizarEjecucion()
     }
     if (this->procesoEnEjecucion.has_value()){
         this->procesoEnEjecucion.value().tiempoTranscurrido += TIEMPO_ACTUALIZACION;
+        bool procesoDebeCambiar = false;
+        //Quitar proceso en ejecucion si termina
         const Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
         
         ui->Tabla_Ejecucion->actualizarTiempos(procesoEnEjecucion);
         
         if (procesoEnEjecucion.tiempoTranscurrido >= procesoEnEjecucion.tiempoEstimado) {
             terminarProcesoActual();
-            ejecutarSiguienteProceso();
+            procesoDebeCambiar = true;
         }
+        //Quitar proceso en ejecucion si se alcanza quantum de tiempo
+        if(tiempoTotal % quantum == 0){
+            reemplazarProcesoEjecucion();
+            procesoDebeCambiar = true;
+        }
+
+        if (procesoDebeCambiar) ejecutarSiguienteProceso();
+
     }else{
         ejecutarSiguienteProceso();
+    }
+}
+
+void MainWindow::reemplazarProcesoEjecucion(){
+    if (procesoEnEjecucion.has_value()){
+        Proceso procesoAReemplazar = procesoEnEjecucion.value();
+        procesosListos.push_back(procesoAReemplazar);
+        ui->Tabla_Listos->pushBack(procesoAReemplazar);
+        quitarProcesoEjecucion();
     }
 }
 
@@ -187,13 +206,20 @@ void MainWindow::error(){
     return;
 }
 
+void MainWindow::quitarProcesoEjecucion(){
+    if (this->procesoEnEjecucion.has_value()){
+        this->ui->Tabla_Ejecucion->limpiar();
+        this->procesoEnEjecucion.reset();
+
+    }
+}
+
 void MainWindow::interrupcion(){
     if (this->procesoEnEjecucion.has_value()){
         Proceso procesoEnEjecucion = this->procesoEnEjecucion.value();
         this->ui->Tabla_Bloqueados->pushBack(procesoEnEjecucion);
         procesosBloqueados.push_back(procesoEnEjecucion);
-        this->ui->Tabla_Ejecucion->limpiar();
-        this->procesoEnEjecucion.reset();
+        quitarProcesoEjecucion();
         ejecutarSiguienteProceso();
     }
     return;
