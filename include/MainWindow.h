@@ -39,6 +39,7 @@ private:
     int procesosEnMemoria;
     bool ejecucionActiva;
     int tiempoTotal;
+    int tiempoQuantum;
     int quantum;
 
     void agregarProceso();

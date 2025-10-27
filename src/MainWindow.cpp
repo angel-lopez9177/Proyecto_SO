@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ejecucionActiva(false)
     , procesosEnMemoria(0)
     , tiempoTotal(0)
+    , tiempoQuantum(0)
     , quantum(4000)
 {
     ui->setupUi(this);
@@ -77,6 +78,7 @@ void MainWindow::ejecutarSiguienteProceso()
     this->ui->Contador_Procesos->setText(QString::number(procesos.size()));
     if (!(procesosListos.empty())){
         this->procesoEnEjecucion = procesosListos.front();
+        tiempoQuantum = 0;
         procesosListos.pop_front();
         this->ui->Tabla_Listos->popFront();
 
@@ -97,6 +99,7 @@ void MainWindow::actualizarEjecucion()
     if (!ejecucionActiva) return;
 
     tiempoTotal += TIEMPO_ACTUALIZACION;
+    tiempoQuantum += TIEMPO_ACTUALIZACION;
     ui->Contador_Tiempo->setText(QString::number(tiempoTotal / 1000.0, 'f', 2) + " s");
 
     if (!(procesosBloqueados.empty())){ 
@@ -125,9 +128,10 @@ void MainWindow::actualizarEjecucion()
             procesoDebeCambiar = true;
         }
         //Quitar proceso en ejecucion si se alcanza quantum de tiempo
-        if(tiempoTotal % quantum == 0){
+        if(tiempoQuantum % quantum == 0){
             reemplazarProcesoEjecucion();
             procesoDebeCambiar = true;
+            tiempoQuantum = 0;
         }
 
         if (procesoDebeCambiar) ejecutarSiguienteProceso();
