@@ -29,8 +29,12 @@ Proceso GestorDatos::generar_proceso(){
         }else{
                 valor2 = QRandomGenerator::global()->bounded(100);
         }
+        
+        int tamano = QRandomGenerator::global()->bounded(6, 31);
 
         Proceso proceso(valor1, operacion, valor2, tiempoEstimado, ID++);
+        proceso.tamano = tamano;
+        proceso.cantidadPaginas = (tamano + 4) / 5;
         
         return proceso;
 }

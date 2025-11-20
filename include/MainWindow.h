@@ -10,6 +10,8 @@
 #include <QKeyEvent>
 #include "TablaResultados.h"
 #include "GestorDatos.h"
+#include "TablaPaginas.h"
+#include "GestorMemoria.h"
 
 namespace Ui {
 class MainWindow;
@@ -41,6 +43,11 @@ private:
     int tiempoTotal;
     int tiempoQuantum;
     int quantum;
+    int contTerminadosOK;
+    int contTerminadosError;
+
+    GestorMemoria *gestorMemoria;
+    TablaPaginas *tablaPaginas;
 
     void agregarProceso();
 
@@ -48,7 +55,7 @@ private:
     void quitarProcesoEjecucion();
     void reemplazarProcesoEjecucion();
 
-    void terminarProcesoActual();
+    void terminarProcesoActual(bool exito);
 
     void pausar();
     void reanudar();
@@ -57,8 +64,13 @@ private:
     void mostrarTablaResultados();
     void nuevoProceso();
 
+    void mostrarTablaPaginasSeparada();
+    void intentarCargarProcesos();
+    void actualizarLabelSiguiente();
+
 private slots:
     void actualizarEjecucion();
+
 
 protected:
     void keyPressEvent(QKeyEvent *event) override;
