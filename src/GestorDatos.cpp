@@ -5,7 +5,7 @@
 #include <QMessageBox>
 #include <QRandomGenerator>
 
-int GestorDatos::ID = 0;
+int GestorDatos::ID = 1;
 
 QList<Proceso> GestorDatos::obtener_procesos(int cantidad)
 {

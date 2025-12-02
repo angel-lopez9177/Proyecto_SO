@@ -47,6 +47,25 @@ public:
             painter->setPen(QPen(Qt::lightGray, 1));
             painter->drawRect(subRect);
         }
+        
+        QString textoID = index.data(Qt::DisplayRole).toString();
+
+        if (!textoID.isEmpty() && textoID != "SO") {
+            QFont fuente = option.font;
+            fuente.setBold(true);
+            fuente.setPointSize(fuente.pointSize() + 2);
+            painter->setFont(fuente);
+            
+            painter->setPen(Qt::black);
+            QRect sombraRect = rect.translated(1, 1);
+            painter->drawText(sombraRect, Qt::AlignCenter, textoID);
+
+            painter->setPen(Qt::white);
+            painter->drawText(rect, Qt::AlignCenter, textoID);
+        } else if (textoID == "SO") {
+            painter->setPen(Qt::white);
+            painter->drawText(rect, Qt::AlignCenter, "SO");
+        }
 
         painter->setPen(Qt::black);
         painter->drawRect(rect);
