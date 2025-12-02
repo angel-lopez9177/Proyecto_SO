@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QDialog>
 #include <QVBoxLayout>
+#include <QTextEdit>
 
 #define LABEL_CONTADOR_OK ui->Label_ContadorTerminadosOK
 #define LABEL_CONTADOR_ERROR ui->Label_ContadorTerminadosError
@@ -260,21 +261,95 @@ void MainWindow::mostrarTablaPaginasSeparada() {
     pausar();
     
     QDialog ventanaT(this);
-    ventanaT.setWindowTitle("Tabla de Páginas - Detalle");
-    ventanaT.resize(900, 600);
-    QVBoxLayout *layout = new QVBoxLayout(&ventanaT);
+    ventanaT.setWindowTitle("Tabla de Páginas y Marcos Libres");
+    ventanaT.resize(1200, 600); // Un poco más ancha
     
-    layout->addWidget(tablaPaginas);
+    QHBoxLayout *mainLayout = new QHBoxLayout(&ventanaT);
+    
+    QVBoxLayout *layoutVisual = new QVBoxLayout();
+    layoutVisual->addWidget(new QLabel("Mapa de Memoria (Marcos):"));
+    layoutVisual->addWidget(tablaPaginas); 
+    mainLayout->addLayout(layoutVisual, 2);
 
+    QVBoxLayout *layoutTexto = new QVBoxLayout();
+    QTextEdit *reporte = new QTextEdit();
+    reporte->setReadOnly(true);
+    reporte->setFont(QFont("Consolas", 10)); 
+    
+    QString texto;
+    
+    texto += "=== TABLAS DE PÁGINAS POR PROCESO ===\n\n";
+    
+    auto imprimirProceso = [&](const Proceso &p, QString estado) {
+        texto += QString("Proceso ID: %1 (%2)\n").arg(p.ID).arg(estado);
+        texto += QString("  Tamaño: %1 | Páginas: %2\n").arg(p.tamano).arg(p.cantidadPaginas);
+        texto += "  Página  ->  Marco    [Espacio Usado]\n";
+        texto += "  ------------------------------------\n";
+        
+        for(int i = 0; i < p.marcosAsignados.size(); ++i) {
+            QString usoInfo = "5/5";
+            if (i == p.marcosAsignados.size() - 1) {
+                int ocupado = p.tamano % 5;
+                if (ocupado == 0) ocupado = 5;
+                
+                int desperdicio = 5 - ocupado;
+                
+                usoInfo = QString("%1/5").arg(ocupado);
+                
+                if (desperdicio > 0) {
+                    usoInfo += QString(" (Frag. Interna: %1)").arg(desperdicio);
+                }
+            }
+
+            texto += QString("     %1    ->    %2       %3\n")
+                        .arg(i, -2)
+                        .arg(p.marcosAsignados[i], -2) 
+                        .arg(usoInfo);
+        }
+        texto += "\n";
+    };
+
+    if (procesoEnEjecucion.has_value()) 
+        imprimirProceso(procesoEnEjecucion.value(), "EJECUCIÓN");
+        
+    for(const auto &p : procesosListos) 
+        imprimirProceso(p, "LISTO");
+        
+    for(const auto &p : procesosBloqueados) 
+        imprimirProceso(p, "BLOQUEADO");
+
+    // B) Marcos Libres
+    texto += "=== MARCOS LIBRES ===\n";
+    texto += "Marcos disponibles para nuevos procesos:\n[ ";
+    
+    int libresCount = 0;
+    // Iteramos los 48 marcos. Usamos el gestorMemoria para ver si están libres.
+    // Nota: gestorMemoria usa unidades (240). Marco i = unidad i*5.
+    for(int i = 0; i < 48; ++i) { // 44 usuarios + 4 SO
+        if (gestorMemoria->obtenerEstadoUnidad(i * 5) == -1) {
+            texto += QString::number(i) + " ";
+            libresCount++;
+        }
+    }
+    texto += "]\n";
+    texto += QString("Total Marcos Libres: %1 / 44\n").arg(libresCount); // Sin contar SO
+
+    reporte->setText(texto);
+    
+    layoutTexto->addWidget(new QLabel("Detalle de Paginación:"));
+    layoutTexto->addWidget(reporte);
+    mainLayout->addLayout(layoutTexto, 1); // Factor de estiramiento 1
+
+    // Mostrar
     ventanaT.exec();
-
+    
+    // Devolver widget a su lugar
     if (ui->layoutMemoria) {
         ui->layoutMemoria->addWidget(tablaPaginas);
     } else {
         tablaPaginas->setParent(this->ui->centralwidget);
         tablaPaginas->show();
     }
-    
 }
 
 void MainWindow::error(){
