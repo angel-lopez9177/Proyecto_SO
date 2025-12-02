@@ -8,10 +8,12 @@
 #include <deque>
 #include <QList>
 #include <QKeyEvent>
+#include <QCoreApplication>
 #include "TablaResultados.h"
 #include "GestorDatos.h"
 #include "TablaPaginas.h"
 #include "GestorMemoria.h"
+#include "GestorArchivos.h"
 
 namespace Ui {
 class MainWindow;
@@ -45,6 +47,9 @@ private:
     int quantum;
     int contTerminadosOK;
     int contTerminadosError;
+    
+    bool retornoSuspendidoPendiente;
+    QList<Proceso> colaSuspendidos;
 
     GestorMemoria *gestorMemoria;
     TablaPaginas *tablaPaginas;
@@ -67,6 +72,12 @@ private:
     void mostrarTablaPaginasSeparada();
     void intentarCargarProcesos();
     void actualizarLabelSiguiente();
+
+    void suspenderProceso();
+    void prepararRetornoSuspendido();
+    void recuperarProcesoDeDisco();
+    
+    void actualizarLabelsSuspendidos();
 
 private slots:
     void actualizarEjecucion();

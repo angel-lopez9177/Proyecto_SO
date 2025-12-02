@@ -47,6 +47,9 @@ MainWindow::MainWindow(QWidget *parent)
     timer = new QTimer(this);
     timer->setInterval(TIEMPO_ACTUALIZACION);
     connect(timer, &QTimer::timeout, this, &MainWindow::actualizarEjecucion);
+
+    GestorArchivos::inicializar();
+    retornoSuspendidoPendiente = false;
 }
 
 MainWindow::~MainWindow()
@@ -70,6 +73,18 @@ void MainWindow::comenzarEjecucion(){
 }
 
 void MainWindow::intentarCargarProcesos() {
+
+    if (retornoSuspendidoPendiente && !colaSuspendidos.empty()) {
+        Proceso &suspendido = colaSuspendidos.first();
+        
+        if (gestorMemoria->hayEspacioDisponible(suspendido.cantidadPaginas)) {
+            recuperarProcesoDeDisco();
+            retornoSuspendidoPendiente = false;
+            return;
+        } 
+        return; 
+    }
+
     while (!procesos.empty()) {
         Proceso &candidato = procesos.first();
 
@@ -86,6 +101,7 @@ void MainWindow::intentarCargarProcesos() {
             break; 
         }
     }
+
     ui->Contador_Procesos->setText(QString::number(procesos.size()));
     actualizarLabelSiguiente();
 }
@@ -94,7 +110,7 @@ void MainWindow::ejecutarSiguienteProceso()
 {
     intentarCargarProcesos();
 
-    if (procesos.empty() && procesosListos.empty() && procesosBloqueados.empty() && !procesoEnEjecucion.has_value()){
+    if (procesos.empty() && procesosListos.empty() && procesosBloqueados.empty() && !procesoEnEjecucion.has_value() && colaSuspendidos.empty()){
         std::cout << "Fin de simulación." << std::endl;
         timer->stop();
         ejecucionActiva = false;
@@ -224,6 +240,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
         case Qt::Key_B: mostrarTablaResultados(); break;
         case Qt::Key_N: nuevoProceso(); break;
         case Qt::Key_T: mostrarTablaPaginasSeparada(); break;
+        case Qt::Key_S: suspenderProceso(); break;
+        case Qt::Key_R: prepararRetornoSuspendido(); break;
         default: QMainWindow::keyPressEvent(event);
     }
 }
@@ -310,4 +328,66 @@ void MainWindow::actualizarLabelSiguiente() {
         if (LABEL_SIGUIENTE_ID) LABEL_SIGUIENTE_ID->setText(QString::number(p.ID));
         if (LABEL_SIGUIENTE_TAMANO) LABEL_SIGUIENTE_TAMANO->setText(QString::number(p.tamano));
     }
+}
+
+void MainWindow::prepararRetornoSuspendido() {
+    if (colaSuspendidos.empty()) return;
+
+    retornoSuspendidoPendiente = true;
+    intentarCargarProcesos();
+    return;
+}
+
+void MainWindow::actualizarLabelsSuspendidos() {
+    ui->Label_ContadorSuspendidos->setText(QString::number(colaSuspendidos.size()));
+
+    if (!colaSuspendidos.empty()) {
+        const Proceso &p = colaSuspendidos.first();
+        ui->Label_ProximoSuspendidoID->setText(QString::number(p.ID));
+        ui->Label_ProximoSuspendidoTamano->setText(QString::number(p.tamano));
+    } else {
+        ui->Label_ProximoSuspendidoID->setText("-");
+        ui->Label_ProximoSuspendidoTamano->setText("-");
+    }
+}
+
+void MainWindow::suspenderProceso() {
+    if (procesosBloqueados.empty()) return;
+
+    Proceso p = procesosBloqueados.front();
+    procesosBloqueados.pop_front();
+    
+    gestorMemoria->liberarMemoria(p);
+
+    GestorArchivos::guardarProceso(p);
+    
+    colaSuspendidos.append(p);
+    actualizarLabelsSuspendidos();
+    
+    int idEjec = procesoEnEjecucion.has_value() ? procesoEnEjecucion->ID : -1;
+    tablaPaginas->actualizarMemorias(gestorMemoria, idEjec, procesosListos, procesosBloqueados);
+    
+    intentarCargarProcesos();
+}
+
+void MainWindow::recuperarProcesoDeDisco() {
+    if (colaSuspendidos.empty()) return;
+
+    timer->stop();
+    
+    Proceso p = colaSuspendidos.takeFirst();
+
+    GestorArchivos::borrarProceso(p.ID);
+    
+    p.tiempoBloqueado = 0;
+
+    gestorMemoria->asignarMemoria(p);
+    procesosListos.push_back(p);
+    
+    actualizarLabelsSuspendidos();
+
+    int idEjec = procesoEnEjecucion.has_value() ? procesoEnEjecucion->ID : -1;
+    tablaPaginas->actualizarMemorias(gestorMemoria, idEjec, procesosListos, procesosBloqueados);
+    
+    timer->start();
 }
