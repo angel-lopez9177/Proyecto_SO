@@ -19,9 +19,20 @@ void TablaResultados::limpiar(){
     ui->Tabla_Resultados->setRowCount(0);
 }
 
-void TablaResultados::actualizarTabla(const QList<Proceso>& procesosTerminados, const std::optional<Proceso>& procesoEjecucion, const std::deque<Proceso>& procesosListos, const std::deque<Proceso>& procesosBloqueados, const QList<Proceso>& procesosNuevos){
+void TablaResultados::actualizarTabla(const QList<Proceso>& procesosTerminados, 
+                                        const std::optional<Proceso>& procesoEjecucion, 
+                                        const std::deque<Proceso>& procesosListos, 
+                                        const std::deque<Proceso>& procesosBloqueados, 
+                                        const QList<Proceso>& procesosNuevos,
+                                        const QList<Proceso>& procesosSuspendidos) {   
     limpiar();
-    ui->Tabla_Resultados->setRowCount(procesosTerminados.size() + (procesoEjecucion.has_value() ? 1 : 0) + procesosListos.size() + procesosBloqueados.size() + procesosNuevos.size());
+    int totalFilas = procesosTerminados.size() + 
+                        (procesoEjecucion.has_value() ? 1 : 0) + 
+                        procesosListos.size() + 
+                        procesosBloqueados.size() + 
+                        procesosNuevos.size() + 
+                        procesosSuspendidos.size();
+    ui->Tabla_Resultados->setRowCount(totalFilas);
     int index = 0;
     for (int i = 0; i < procesosTerminados.size(); ++i) {
         const Proceso& p = procesosTerminados.at(i);
@@ -37,6 +48,9 @@ void TablaResultados::actualizarTabla(const QList<Proceso>& procesosTerminados, 
     for (size_t i = 0; i < procesosBloqueados.size(); ++i) {
         const Proceso& p = procesosBloqueados.at(i);
         agregarProceso(p, index++);
+    }
+    for (int i = 0; i < procesosSuspendidos.size(); ++i) {
+        agregarProceso(procesosSuspendidos.at(i), index++);
     }
     for (int i = 0; i < procesosNuevos.size(); ++i) {
         const Proceso& p = procesosNuevos.at(i);

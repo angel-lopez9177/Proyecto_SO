@@ -253,7 +253,12 @@ void MainWindow::reanudar() { timer->start(); }
 void MainWindow::mostrarTablaResultados(){
     pausar();
     tablaResultados->setTiempoGlobal(tiempoTotal);
-    tablaResultados->actualizarTabla(procesosFinalizados, procesoEnEjecucion, procesosListos, procesosBloqueados, procesos);
+    tablaResultados->actualizarTabla(procesosFinalizados, 
+                                    procesoEnEjecucion, 
+                                    procesosListos, 
+                                    procesosBloqueados, 
+                                    procesos, 
+                                    colaSuspendidos);    
     tablaResultados->show();
 }
 
@@ -262,7 +267,7 @@ void MainWindow::mostrarTablaPaginasSeparada() {
     
     QDialog ventanaT(this);
     ventanaT.setWindowTitle("Tabla de Páginas y Marcos Libres");
-    ventanaT.resize(1200, 600); // Un poco más ancha
+    ventanaT.resize(1050, 550);
     
     QHBoxLayout *mainLayout = new QHBoxLayout(&ventanaT);
     
@@ -318,32 +323,28 @@ void MainWindow::mostrarTablaPaginasSeparada() {
     for(const auto &p : procesosBloqueados) 
         imprimirProceso(p, "BLOQUEADO");
 
-    // B) Marcos Libres
     texto += "=== MARCOS LIBRES ===\n";
     texto += "Marcos disponibles para nuevos procesos:\n[ ";
     
     int libresCount = 0;
-    // Iteramos los 48 marcos. Usamos el gestorMemoria para ver si están libres.
-    // Nota: gestorMemoria usa unidades (240). Marco i = unidad i*5.
-    for(int i = 0; i < 48; ++i) { // 44 usuarios + 4 SO
+
+    for(int i = 0; i < 48; ++i) {
         if (gestorMemoria->obtenerEstadoUnidad(i * 5) == -1) {
             texto += QString::number(i) + " ";
             libresCount++;
         }
     }
     texto += "]\n";
-    texto += QString("Total Marcos Libres: %1 / 44\n").arg(libresCount); // Sin contar SO
+    texto += QString("Total Marcos Libres: %1 / 44\n").arg(libresCount);
 
     reporte->setText(texto);
     
     layoutTexto->addWidget(new QLabel("Detalle de Paginación:"));
     layoutTexto->addWidget(reporte);
-    mainLayout->addLayout(layoutTexto, 1); // Factor de estiramiento 1
+    mainLayout->addLayout(layoutTexto, 1);
 
-    // Mostrar
     ventanaT.exec();
-    
-    // Devolver widget a su lugar
+
     if (ui->layoutMemoria) {
         ui->layoutMemoria->addWidget(tablaPaginas);
     } else {

@@ -16,7 +16,12 @@ class TablaResultados : public QWidget
     public:
         explicit TablaResultados(QWidget *parent = nullptr);
         ~TablaResultados();
-        void actualizarTabla(const QList<Proceso>& procesosTerminados, const std::optional<Proceso>& procesoEjecucion, const std::deque<Proceso>& procesosListos, const std::deque<Proceso>& procesosBloqueados, const QList<Proceso>& procesosNuevos);
+        void actualizarTabla(const QList<Proceso>& procesosTerminados, 
+            const std::optional<Proceso>& procesoEjecucion, 
+            const std::deque<Proceso>& procesosListos, 
+            const std::deque<Proceso>& procesosBloqueados, 
+            const QList<Proceso>& procesosNuevos,
+            const QList<Proceso>& procesosSuspendidos);
         void actualizarTabla(const QList<Proceso>& procesosTerminados);
         void agregarProceso(const Proceso& proceso, int i);
         void limpiar();

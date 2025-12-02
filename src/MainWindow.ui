@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>655</width>
-    <height>402</height>
+    <width>729</width>
+    <height>761</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -23,6 +23,12 @@
    <string>FCFS</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="focusPolicy">
     <enum>Qt::FocusPolicy::NoFocus</enum>
    </property>
@@ -36,7 +42,7 @@
     <item>
      <widget class="QFrame" name="Frame_Ejecucion">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
         <horstretch>2</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -105,6 +111,9 @@
          </property>
          <property name="lineWidth">
           <number>1</number>
+         </property>
+         <property name="sizeAdjustPolicy">
+          <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
          </property>
          <property name="sortingEnabled">
           <bool>false</bool>
